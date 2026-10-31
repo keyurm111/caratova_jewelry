@@ -1,7 +1,22 @@
 {
   "sections": {
+    "hero_slider": {
+      "type": "hero-metaobject-slider",
+      "settings": {
+        "source": "metaobject",
+        "metaobject_handle": "hero_slide",
+        "auto_rotate": true,
+        "change_slides_speed": 5,
+        "image_overlay_opacity": 10,
+        "desktop_content_position": "middle-center",
+        "heading_size": "h1",
+        "show_text_box": false,
+        "color_scheme": "scheme-1"
+      }
+    },
     "image_banner": {
       "type": "image-banner",
+      "disabled": true,
       "blocks": {
         "heading": {
           "type": "heading",
@@ -69,6 +84,7 @@
     }
   },
   "order": [
+    "hero_slider",
     "image_banner",
     "featured_collection"
   ]

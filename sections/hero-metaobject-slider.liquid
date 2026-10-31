@@ -1,0 +1,596 @@
+{{ 'section-hero-metaobject-slider.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'section-hero-metaobject-slider.js' | asset_url }}" defer="defer"></script>
+
+{%- liquid
+  assign metaobject_handle = section.settings.metaobject_handle | strip | default: 'hero_slide'
+  assign metaobject_slides = shop.metaobjects[metaobject_handle].values
+
+  assign use_metaobjects = false
+  if section.settings.source == 'metaobject' and metaobject_slides != blank and metaobject_slides.size > 0
+    assign use_metaobjects = true
+  endif
+
+  if use_metaobjects
+    assign slides_count = metaobject_slides.size
+  elsif section.blocks.size > 0
+    assign slides_count = section.blocks.size
+  else
+    assign slides_count = 2
+  endif
+-%}
+
+<div class="color-{{ section.settings.color_scheme }} gradient">
+  <hero-metaobject-slider
+    class="hero-slider"
+    data-autoplay="{{ section.settings.auto_rotate }}"
+    data-speed="{{ section.settings.change_slides_speed }}"
+    data-slide-count="{{ slides_count }}"
+  >
+    <div class="hero-slider__viewport">
+      <div class="hero-slider__track" role="region" aria-label="Hero Carousel">
+        {%- if use_metaobjects -%}
+          {%- comment -%} Rendering Slides from Shopify Metaobjects {%- endcomment -%}
+          {%- for item in metaobject_slides -%}
+            {%- liquid
+              # Extract string values safely from Metaobject fields
+              assign slide_title = item.title.value | append: '' | strip
+              assign slide_paragraph = item.paragraph.value | append: '' | strip
+              assign slide_button_name = item.button_name.value | append: '' | strip
+              assign slide_button_url = item.button_url.value | append: '' | strip
+
+              if slide_button_url == '' and item.button_url != blank
+                assign slide_button_url = item.button_url | append: '' | strip
+              endif
+
+              # Extract image references safely
+              assign slide_desktop_img = item.desktop_image.value | default: item.desktop_image
+              assign slide_mobile_img = item.mobile_image.value | default: item.mobile_image
+
+              assign has_text = false
+              if slide_title != blank or slide_paragraph != blank
+                assign has_text = true
+              endif
+
+              assign has_button = false
+              if slide_button_name != blank
+                assign has_button = true
+              endif
+
+              # If button_url is provided, make the banner clickable
+              assign is_clickable_banner = false
+              if slide_button_url != blank
+                assign is_clickable_banner = true
+              endif
+
+              assign is_external = false
+              if slide_button_url contains 'http://' or slide_button_url contains 'https://'
+                assign is_external = true
+              endif
+
+              assign loading_attr = 'lazy'
+              assign fetchpriority_attr = 'auto'
+              if forloop.first
+                assign loading_attr = 'eager'
+                assign fetchpriority_attr = 'high'
+              endif
+            -%}
+
+            <div
+              class="hero-slider__slide"
+              id="HeroSlide-{{ section.id }}-{{ forloop.index }}"
+              role="group"
+              aria-label="Slide {{ forloop.index }} of {{ forloop.length }}"
+            >
+              <div class="hero-slider__media-wrapper">
+                <picture class="hero-slider__picture">
+                  {%- if slide_mobile_img != blank -%}
+                    <source
+                      media="(max-width: 749px)"
+                      srcset="
+                        {{ slide_mobile_img | image_url: width: 480 }} 480w,
+                        {{ slide_mobile_img | image_url: width: 750 }} 750w,
+                        {{ slide_mobile_img | image_url: width: 1100 }} 1100w
+                      "
+                      sizes="100vw"
+                    >
+                  {%- endif -%}
+
+                  {%- if slide_desktop_img != blank -%}
+                    {{
+                      slide_desktop_img
+                      | image_url: width: 3840
+                      | image_tag:
+                        loading: loading_attr,
+                        fetchpriority: fetchpriority_attr,
+                        sizes: '100vw',
+                        widths: '750, 1100, 1500, 1780, 2000, 3000, 3840',
+                        class: 'hero-slider__image'
+                    }}
+                  {%- elsif slide_mobile_img != blank -%}
+                    {{
+                      slide_mobile_img
+                      | image_url: width: 1500
+                      | image_tag: loading: loading_attr, class: 'hero-slider__image'
+                    }}
+                  {%- else -%}
+                    {{ 'lifestyle-1' | placeholder_svg_tag: 'placeholder-svg hero-slider__placeholder' }}
+                  {%- endif -%}
+                </picture>
+
+                {%- if section.settings.image_overlay_opacity > 0 -%}
+                  <div
+                    class="hero-slider__overlay"
+                    style="opacity: {{ section.settings.image_overlay_opacity | divided_by: 100.0 }};"
+                  ></div>
+                {%- endif -%}
+
+                {%- if is_clickable_banner -%}
+                  <a
+                    href="{{ slide_button_url }}"
+                    {% if is_external %}
+                      target="_blank" rel="noopener noreferrer"
+                    {% endif %}
+                    class="hero-slider__full-link"
+                    aria-label="{{ slide_title | default: 'Hero Banner' | escape }}"
+                  ></a>
+                {%- endif -%}
+
+                {%- if has_text or has_button -%}
+                  <div class="hero-slider__content-wrap hero-slider__content-wrap--{{ section.settings.desktop_content_position }} page-width">
+                    <div class="hero-slider__box{% unless section.settings.show_text_box %} hero-slider__box--transparent{% endunless %}">
+                      {%- if slide_title != blank -%}
+                        <h2 class="hero-slider__heading {{ section.settings.heading_size }}">
+                          {{ slide_title }}
+                        </h2>
+                      {%- endif -%}
+
+                      {%- if slide_paragraph != blank -%}
+                        <div class="hero-slider__paragraph">
+                          {{ slide_paragraph }}
+                        </div>
+                      {%- endif -%}
+
+                      {%- if has_button -%}
+                        <div class="hero-slider__button-wrap">
+                          <a
+                            {% if slide_button_url != blank %}
+                              href="{{ slide_button_url }}"
+                              {% if is_external %}
+                                target="_blank" rel="noopener noreferrer"
+                              {% endif %}
+                            {% else %}
+                              role="link" aria-disabled="true"
+                            {% endif %}
+                            class="button button--primary hero-slider__btn"
+                          >
+                            {{ slide_button_name }}
+                          </a>
+                        </div>
+                      {%- endif -%}
+                    </div>
+                  </div>
+                {%- endif -%}
+              </div>
+            </div>
+          {%- endfor -%}
+
+        {%- elsif section.blocks.size > 0 -%}
+          {%- comment -%} Rendering Slides from Section Blocks {%- endcomment -%}
+          {%- for block in section.blocks -%}
+            {%- liquid
+              assign slide_title = block.settings.title | append: '' | strip
+              assign slide_paragraph = block.settings.paragraph | append: '' | strip
+              assign slide_button_name = block.settings.button_name | append: '' | strip
+              assign slide_button_url = block.settings.button_url | append: '' | strip
+
+              assign slide_desktop_img = block.settings.desktop_image
+              assign slide_mobile_img = block.settings.mobile_image
+
+              assign has_text = false
+              if slide_title != blank or slide_paragraph != blank
+                assign has_text = true
+              endif
+
+              assign has_button = false
+              if slide_button_name != blank
+                assign has_button = true
+              endif
+
+              # If button_url is provided, make the banner clickable
+              assign is_clickable_banner = false
+              if slide_button_url != blank
+                assign is_clickable_banner = true
+              endif
+
+              assign is_external = false
+              if slide_button_url contains 'http://' or slide_button_url contains 'https://'
+                assign is_external = true
+              endif
+
+              assign loading_attr = 'lazy'
+              assign fetchpriority_attr = 'auto'
+              if forloop.first
+                assign loading_attr = 'eager'
+                assign fetchpriority_attr = 'high'
+              endif
+            -%}
+
+            <div
+              class="hero-slider__slide"
+              id="HeroSlide-{{ section.id }}-{{ forloop.index }}"
+              role="group"
+              aria-label="Slide {{ forloop.index }} of {{ forloop.length }}"
+              {{ block.shopify_attributes }}
+            >
+              <div class="hero-slider__media-wrapper">
+                <picture class="hero-slider__picture">
+                  {%- if slide_mobile_img != blank -%}
+                    <source
+                      media="(max-width: 749px)"
+                      srcset="
+                        {{ slide_mobile_img | image_url: width: 480 }} 480w,
+                        {{ slide_mobile_img | image_url: width: 750 }} 750w,
+                        {{ slide_mobile_img | image_url: width: 1100 }} 1100w
+                      "
+                      sizes="100vw"
+                    >
+                  {%- endif -%}
+
+                  {%- if slide_desktop_img != blank -%}
+                    {{
+                      slide_desktop_img
+                      | image_url: width: 3840
+                      | image_tag:
+                        loading: loading_attr,
+                        fetchpriority: fetchpriority_attr,
+                        sizes: '100vw',
+                        widths: '750, 1100, 1500, 1780, 2000, 3000, 3840',
+                        class: 'hero-slider__image'
+                    }}
+                  {%- elsif slide_mobile_img != blank -%}
+                    {{
+                      slide_mobile_img
+                      | image_url: width: 1500
+                      | image_tag: loading: loading_attr, class: 'hero-slider__image'
+                    }}
+                  {%- else -%}
+                    {%- assign placeholder_index = forloop.index | modulo: 2 | plus: 1 -%}
+                    {{ 'lifestyle-' | append: placeholder_index | placeholder_svg_tag: 'placeholder-svg hero-slider__placeholder' }}
+                  {%- endif -%}
+                </picture>
+
+                {%- if section.settings.image_overlay_opacity > 0 -%}
+                  <div
+                    class="hero-slider__overlay"
+                    style="opacity: {{ section.settings.image_overlay_opacity | divided_by: 100.0 }};"
+                  ></div>
+                {%- endif -%}
+
+                {%- if is_clickable_banner -%}
+                  <a
+                    href="{{ slide_button_url }}"
+                    {% if is_external %}
+                      target="_blank" rel="noopener noreferrer"
+                    {% endif %}
+                    class="hero-slider__full-link"
+                    aria-label="{{ slide_title | default: 'Hero Banner' | escape }}"
+                  ></a>
+                {%- endif -%}
+
+                {%- if has_text or has_button -%}
+                  <div class="hero-slider__content-wrap hero-slider__content-wrap--{{ section.settings.desktop_content_position }} page-width">
+                    <div class="hero-slider__box{% unless section.settings.show_text_box %} hero-slider__box--transparent{% endunless %}">
+                      {%- if slide_title != blank -%}
+                        <h2 class="hero-slider__heading {{ section.settings.heading_size }}">
+                          {{ slide_title }}
+                        </h2>
+                      {%- endif -%}
+
+                      {%- if slide_paragraph != blank -%}
+                        <div class="hero-slider__paragraph">
+                          {{ slide_paragraph }}
+                        </div>
+                      {%- endif -%}
+
+                      {%- if has_button -%}
+                        <div class="hero-slider__button-wrap">
+                          <a
+                            {% if slide_button_url != blank %}
+                              href="{{ slide_button_url }}"
+                              {% if is_external %}
+                                target="_blank" rel="noopener noreferrer"
+                              {% endif %}
+                            {% else %}
+                              role="link" aria-disabled="true"
+                            {% endif %}
+                            class="button button--primary hero-slider__btn"
+                          >
+                            {{ slide_button_name }}
+                          </a>
+                        </div>
+                      {%- endif -%}
+                    </div>
+                  </div>
+                {%- endif -%}
+              </div>
+            </div>
+          {%- endfor -%}
+
+        {%- else -%}
+          {%- comment -%} Onboarding Placeholders {%- endcomment -%}
+          {%- for i in (1..2) -%}
+            <div
+              class="hero-slider__slide"
+              id="HeroSlide-{{ section.id }}-{{ i }}"
+              role="group"
+              aria-label="Demo Slide {{ i }} of 2"
+            >
+              <div class="hero-slider__media-wrapper">
+                <picture class="hero-slider__picture">
+                  {{ 'lifestyle-' | append: i | placeholder_svg_tag: 'placeholder-svg hero-slider__placeholder' }}
+                </picture>
+
+                <div
+                  class="hero-slider__overlay"
+                  style="opacity: 0.25;"
+                ></div>
+
+                <div class="hero-slider__content-wrap hero-slider__content-wrap--middle-center page-width">
+                  <div class="hero-slider__box hero-slider__box--transparent">
+                    <h2 class="hero-slider__heading h1">
+                      Hero Slide {{ i }} (16:9 Desktop / 4:5 Mobile)
+                    </h2>
+                    <div class="hero-slider__paragraph">
+                      <p>Connect your Shopify Metaobject definition <code>hero_slide</code> or add blocks to customize this slider.</p>
+                    </div>
+                    <div class="hero-slider__button-wrap">
+                      <a href="#" class="button button--primary hero-slider__btn">
+                        Explore Collection
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          {%- endfor -%}
+        {%- endif -%}
+      </div>
+
+      {%- if slides_count > 1 -%}
+        <!-- Navigation Arrows -->
+        <button
+          type="button"
+          class="hero-slider__arrow hero-slider__arrow--prev"
+          aria-label="Previous Slide"
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="15 18 9 12 15 6"></polyline>
+          </svg>
+        </button>
+
+        <button
+          type="button"
+          class="hero-slider__arrow hero-slider__arrow--next"
+          aria-label="Next Slide"
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="9 18 15 12 9 6"></polyline>
+          </svg>
+        </button>
+
+        <!-- Pagination Dots -->
+        <div class="hero-slider__dots" role="tablist" aria-label="Hero slider dots">
+          {%- for i in (1..slides_count) -%}
+            <button
+              type="button"
+              class="hero-slider__dot{% if forloop.first %} is-active{% endif %}"
+              role="tab"
+              aria-label="Go to slide {{ i }}"
+              aria-current="{% if forloop.first %}true{% else %}false{% endif %}"
+            ></button>
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+    </div>
+  </hero-metaobject-slider>
+</div>
+
+{% schema %}
+{
+  "name": "Hero Metaobject Slider",
+  "tag": "section",
+  "class": "section hero-metaobject-slider-section",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "select",
+      "id": "source",
+      "label": "Slides Source",
+      "options": [
+        {
+          "value": "metaobject",
+          "label": "Shopify Metaobjects (Automatic)"
+        },
+        {
+          "value": "blocks",
+          "label": "Theme Editor Blocks (Manual / Dynamic Sources)"
+        }
+      ],
+      "default": "metaobject",
+      "info": "When set to 'Shopify Metaobjects', slides are loaded automatically from the definition below."
+    },
+    {
+      "type": "text",
+      "id": "metaobject_handle",
+      "label": "Metaobject Type Handle",
+      "default": "hero_slide",
+      "info": "The handle of the metaobject definition in Shopify Admin (default: hero_slide)."
+    },
+    {
+      "type": "checkbox",
+      "id": "auto_rotate",
+      "label": "Auto-rotate slides",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "change_slides_speed",
+      "min": 3,
+      "max": 10,
+      "step": 1,
+      "unit": "s",
+      "label": "Change slides every",
+      "default": 5
+    },
+    {
+      "type": "range",
+      "id": "image_overlay_opacity",
+      "min": 0,
+      "max": 90,
+      "step": 5,
+      "unit": "%",
+      "label": "Image overlay opacity (Dark tint)",
+      "default": 10
+    },
+    {
+      "type": "select",
+      "id": "desktop_content_position",
+      "label": "Desktop content position",
+      "options": [
+        {
+          "value": "top-left",
+          "label": "Top left"
+        },
+        {
+          "value": "top-center",
+          "label": "Top center"
+        },
+        {
+          "value": "middle-left",
+          "label": "Middle left"
+        },
+        {
+          "value": "middle-center",
+          "label": "Middle center"
+        },
+        {
+          "value": "middle-right",
+          "label": "Middle right"
+        },
+        {
+          "value": "bottom-left",
+          "label": "Bottom left"
+        },
+        {
+          "value": "bottom-center",
+          "label": "Bottom center"
+        }
+      ],
+      "default": "middle-center"
+    },
+    {
+      "type": "select",
+      "id": "heading_size",
+      "label": "Heading size",
+      "options": [
+        {
+          "value": "h2",
+          "label": "Small (H2)"
+        },
+        {
+          "value": "h1",
+          "label": "Medium (H1)"
+        },
+        {
+          "value": "h0",
+          "label": "Large (H0)"
+        }
+      ],
+      "default": "h1"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_text_box",
+      "label": "Show text box container",
+      "default": false
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-1"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "slide",
+      "name": "Slide",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "desktop_image",
+          "label": "Desktop Image (16:9 ratio recommended)"
+        },
+        {
+          "type": "image_picker",
+          "id": "mobile_image",
+          "label": "Mobile Image (4:5 ratio recommended)"
+        },
+        {
+          "type": "inline_richtext",
+          "id": "title",
+          "label": "Title",
+          "info": "Leave blank if you want an image-only clickable banner."
+        },
+        {
+          "type": "richtext",
+          "id": "paragraph",
+          "label": "Paragraph",
+          "info": "Leave blank if you want an image-only clickable banner."
+        },
+        {
+          "type": "text",
+          "id": "button_name",
+          "label": "Button Name (Label)",
+          "info": "If left blank and a Button URL is provided, clicking anywhere on the banner navigates to that URL."
+        },
+        {
+          "type": "url",
+          "id": "button_url",
+          "label": "Button URL / Banner Link"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Hero Metaobject Slider",
+      "settings": {
+        "source": "metaobject",
+        "metaobject_handle": "hero_slide"
+      },
+      "blocks": [
+        {
+          "type": "slide",
+          "settings": {
+            "title": "New Caratova Collection",
+            "paragraph": "<p>Discover fine jewelry crafted with brilliance and elegance.</p>",
+            "button_name": "Shop Collection"
+          }
+        },
+        {
+          "type": "slide",
+          "settings": {
+            "title": "Timeless Diamond Classics",
+            "paragraph": "<p>Designed for life's most unforgettable moments.</p>",
+            "button_name": "Explore Classics"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
+
