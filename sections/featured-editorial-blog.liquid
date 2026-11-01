@@ -1,0 +1,185 @@
+{{ 'section-featured-editorial-blog.css' | asset_url | stylesheet_tag }}
+
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+{%- endstyle -%}
+
+{%- assign blog = section.settings.blog -%}
+{%- if blog == blank or blog.articles_count == 0 -%}
+  {%- if blogs['news'] != blank and blogs['news'].articles_count > 0 -%}
+    {%- assign blog = blogs['news'] -%}
+  {%- elsif blogs['journal'] != blank and blogs['journal'].articles_count > 0 -%}
+    {%- assign blog = blogs['journal'] -%}
+  {%- elsif blogs['blog'] != blank and blogs['blog'].articles_count > 0 -%}
+    {%- assign blog = blogs['blog'] -%}
+  {%- endif -%}
+{%- endif -%}
+
+{%- if blog != blank and blog.articles_count > 0 -%}
+  <div class="featured-editorial-blog-section section-{{ section.id }}-padding color-{{ section.settings.color_scheme }} gradient" id="EditorialBlog-{{ section.id }}">
+    <div class="page-width">
+      
+      {%- comment -%} Header: Same layout and View More button as Trending Articles {%- endcomment -%}
+      <div class="editorial-blog__header">
+        <div class="editorial-blog__header-text">
+          {%- if section.settings.eyebrow != blank -%}
+            <span class="editorial-blog__eyebrow">{{ section.settings.eyebrow | escape }}</span>
+          {%- endif -%}
+          {%- if section.settings.heading != blank -%}
+            <h2 class="editorial-blog__heading">
+              {{ section.settings.heading | escape }}
+            </h2>
+          {%- endif -%}
+        </div>
+
+        {%- if section.settings.view_all_label != blank -%}
+          <div class="editorial-blog__header-actions">
+            <a
+              href="{{ section.settings.view_all_link | default: blog.url }}"
+              class="editorial-blog__view-all"
+            >
+              {{ section.settings.view_all_label | escape }}
+            </a>
+          </div>
+        {%- endif -%}
+      </div>
+
+      {%- comment -%} Latest 4 Blog Cards Grid: Image + Title Only {%- endcomment -%}
+      <div class="editorial-blog__grid">
+        {%- for article in blog.articles limit: 4 -%}
+          <article class="editorial-blog__card">
+            {%- comment -%} 1. Blog Image Only {%- endcomment -%}
+            <a href="{{ article.url }}" class="editorial-blog__image-link" aria-label="{{ article.title | escape }}">
+              <div class="editorial-blog__image-wrapper">
+                {%- if article.image -%}
+                  {{
+                    article.image
+                    | image_url: width: 1000
+                    | image_tag:
+                      loading: 'lazy',
+                      sizes: '(min-width: 990px) 25vw, (min-width: 750px) 50vw, 100vw',
+                      widths: '360, 540, 720, 900, 1080',
+                      class: 'editorial-blog__image'
+                  }}
+                {%- else -%}
+                  <div class="editorial-blog__image-placeholder">
+                    {{ 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+                  </div>
+                {%- endif -%}
+              </div>
+            </a>
+
+            {%- comment -%} 2. Blog Title Only {%- endcomment -%}
+            <div class="editorial-blog__content">
+              <h3 class="editorial-blog__title">
+                <a href="{{ article.url }}" class="editorial-blog__title-link">
+                  {{ article.title | escape }}
+                </a>
+              </h3>
+            </div>
+          </article>
+        {%- endfor -%}
+      </div>
+
+    </div>
+  </div>
+{%- elsif request.design_mode -%}
+  <div class="featured-editorial-blog-section section-{{ section.id }}-padding featured-editorial-blog-section--empty color-{{ section.settings.color_scheme }} gradient" id="EditorialBlog-{{ section.id }}">
+    <div class="page-width">
+      <div class="editorial-blog__admin-note">
+        <p><strong>Editorial Blog Section:</strong> Please select a blog with published articles in the settings to display it on the store.</p>
+      </div>
+    </div>
+  </div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Editorial Blog",
+  "tag": "section",
+  "class": "section",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "blog",
+      "id": "blog",
+      "label": "Blog"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow Text",
+      "default": "THE JOURNAL"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Stories from the Atelier"
+    },
+    {
+      "type": "text",
+      "id": "view_all_label",
+      "label": "View All Link Label",
+      "default": "VIEW ALL STORIES"
+    },
+    {
+      "type": "url",
+      "id": "view_all_link",
+      "label": "View All URL"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "header",
+      "content": "Section Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding top",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding bottom",
+      "default": 80
+    }
+  ],
+  "presets": [
+    {
+      "name": "Editorial Blog",
+      "settings": {
+        "eyebrow": "THE JOURNAL",
+        "heading": "Stories from the Atelier",
+        "view_all_label": "VIEW ALL STORIES"
+      }
+    }
+  ]
+}
+{% endschema %}

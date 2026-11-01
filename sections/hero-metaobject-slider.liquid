@@ -33,6 +33,7 @@
           {%- for item in metaobject_slides -%}
             {%- liquid
               # Extract string values safely from Metaobject fields
+              assign slide_eyebrow = item.eyebrow.value | default: item.subtitle.value | default: item.eyebrow | append: '' | strip
               assign slide_title = item.title.value | append: '' | strip
               assign slide_paragraph = item.paragraph.value | append: '' | strip
               assign slide_button_name = item.button_name.value | append: '' | strip
@@ -47,7 +48,7 @@
               assign slide_mobile_img = item.mobile_image.value | default: item.mobile_image
 
               assign has_text = false
-              if slide_title != blank or slide_paragraph != blank
+              if slide_title != blank or slide_paragraph != blank or slide_eyebrow != blank
                 assign has_text = true
               endif
 
@@ -138,6 +139,10 @@
                 {%- if has_text or has_button -%}
                   <div class="hero-slider__content-wrap hero-slider__content-wrap--{{ section.settings.desktop_content_position }} page-width">
                     <div class="hero-slider__box{% unless section.settings.show_text_box %} hero-slider__box--transparent{% endunless %}">
+                      {%- if slide_eyebrow != blank -%}
+                        <span class="hero-slider__eyebrow">{{ slide_eyebrow }}</span>
+                      {%- endif -%}
+
                       {%- if slide_title != blank -%}
                         <h2 class="hero-slider__heading {{ section.settings.heading_size }}">
                           {{ slide_title }}
@@ -280,6 +285,10 @@
                 {%- if has_text or has_button -%}
                   <div class="hero-slider__content-wrap hero-slider__content-wrap--{{ section.settings.desktop_content_position }} page-width">
                     <div class="hero-slider__box{% unless section.settings.show_text_box %} hero-slider__box--transparent{% endunless %}">
+                      {%- if slide_eyebrow != blank -%}
+                        <span class="hero-slider__eyebrow">{{ slide_eyebrow }}</span>
+                      {%- endif -%}
+
                       {%- if slide_title != blank -%}
                         <h2 class="hero-slider__heading {{ section.settings.heading_size }}">
                           {{ slide_title }}
@@ -488,7 +497,7 @@
           "label": "Bottom center"
         }
       ],
-      "default": "middle-center"
+      "default": "bottom-left"
     },
     {
       "type": "select",

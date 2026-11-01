@@ -1,0 +1,321 @@
+/* ==========================================================================
+   Luxury Editorial Atelier Footer (Caratova / Aurelle)
+   ========================================================================== */
+
+.luxury-footer {
+  background-color: #F7F3EB;
+  color: #1C1A16;
+  border-top: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  box-sizing: border-box;
+  width: 100%;
+  padding-top: 6rem;
+  padding-bottom: 4rem;
+  position: relative;
+  overflow: hidden;
+}
+
+body:has(.luxury-cta-section) .luxury-footer,
+body:has(.luxury-cta-section) .shopify-section-group-footer-group,
+.shopify-section:has(.luxury-cta-section) + .shopify-section,
+.shopify-section:has(.luxury-cta-section) + .shopify-section .luxury-footer {
+  border-top: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  margin-top: -3px !important;
+}
+
+.luxury-footer__inner.page-width,
+.luxury-footer__inner {
+  max-width: 1920px !important;
+  margin: 0 auto !important;
+  padding-left: var(--page-padding-side) !important;
+  padding-right: var(--page-padding-side) !important;
+  box-sizing: border-box;
+}
+
+/* --------------------------------------------------------------------------
+   Top Row: Navigation Columns + Newsletter
+   -------------------------------------------------------------------------- */
+.luxury-footer__top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 4rem;
+  margin-bottom: 5.5rem;
+}
+
+@media screen and (max-width: 989px) {
+  .luxury-footer__top {
+    flex-direction: column-reverse;
+    gap: 4.5rem;
+    margin-bottom: 4rem;
+  }
+}
+
+/* Nav Columns Container */
+.luxury-footer__nav-cols {
+  display: flex;
+  flex: 1 1 auto;
+  gap: clamp(3rem, 5vw, 7rem);
+  flex-wrap: wrap;
+}
+
+@media screen and (max-width: 640px) {
+  .luxury-footer__nav-cols {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 3rem 2rem;
+    width: 100%;
+  }
+}
+
+.luxury-footer__col {
+  display: flex;
+  flex-direction: column;
+}
+
+.luxury-footer__col-title {
+  font-family: var(--font-body-family);
+  font-size: 1.15rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #7A7062;
+  margin: 0 0 2rem 0;
+}
+
+.luxury-footer__col-title-link {
+  color: inherit;
+  text-decoration: none;
+  transition: opacity 0.25s ease;
+}
+
+.luxury-footer__col-title-link:hover {
+  opacity: 0.7;
+}
+
+.luxury-footer__nested-subcol {
+  display: flex;
+  flex-direction: column;
+}
+
+.luxury-footer__links {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1.15rem;
+}
+
+.luxury-footer__link {
+  font-family: var(--font-body-family);
+  font-size: 1.35rem;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  color: #574F44;
+  text-decoration: none;
+  transition: color 0.25s ease, opacity 0.25s ease;
+  display: inline-block;
+}
+
+.luxury-footer__link:hover {
+  color: #1C1A16;
+  opacity: 0.8;
+}
+
+/* --------------------------------------------------------------------------
+   Newsletter Column
+   -------------------------------------------------------------------------- */
+.luxury-footer__newsletter-col {
+  flex: 0 1 420px;
+  max-width: 460px;
+  width: 100%;
+}
+
+@media screen and (max-width: 989px) {
+  .luxury-footer__newsletter-col {
+    max-width: 100%;
+  }
+}
+
+.luxury-footer__newsletter-heading {
+  font-family: var(--font-heading-family), "Cormorant Garamond", "Playfair Display", Georgia, serif;
+  font-size: clamp(2rem, 2.4vw, 2.8rem);
+  font-weight: 400;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  color: #1C1A16;
+  margin: 0 0 2.2rem 0;
+}
+
+.luxury-footer__form {
+  margin-bottom: 2.2rem;
+  width: 100%;
+}
+
+.luxury-footer__input-wrap {
+  display: flex;
+  align-items: center;
+  position: relative;
+  width: 100%;
+  border-bottom: 1px solid #756D60;
+  padding-bottom: 0.6rem;
+  transition: border-color 0.25s ease;
+}
+
+.luxury-footer__input-wrap:focus-within {
+  border-bottom-color: #1C1A16;
+}
+
+.luxury-footer__input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  font-family: var(--font-body-family);
+  font-size: 1.3rem;
+  color: #1C1A16;
+  padding: 0.4rem 0;
+}
+
+.luxury-footer__input::placeholder {
+  color: #8C8275;
+  font-size: 1.25rem;
+  font-weight: 400;
+  opacity: 0.85;
+}
+
+.luxury-footer__submit-btn {
+  background: transparent;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  padding: 0.4rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #1C1A16;
+  transition: transform 0.25s ease, opacity 0.25s ease;
+}
+
+.luxury-footer__submit-btn:hover {
+  transform: translateX(3px);
+  opacity: 0.7;
+}
+
+.luxury-footer__submit-btn svg {
+  width: 1.8rem;
+  height: 1.8rem;
+}
+
+.luxury-footer__form-message {
+  font-family: var(--font-body-family);
+  font-size: 1.2rem;
+  margin-top: 0.8rem;
+}
+
+.luxury-footer__form-message--success {
+  color: #2D6A4F;
+}
+
+.luxury-footer__form-message--error {
+  color: #BA1A1A;
+}
+
+/* Social Links */
+.luxury-footer__social-links {
+  display: flex;
+  align-items: center;
+  gap: 1.6rem;
+}
+
+.luxury-footer__social-link {
+  color: #5C5245;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.25s ease, transform 0.25s ease;
+}
+
+.luxury-footer__social-link:hover {
+  color: #1C1A16;
+  transform: translateY(-1px);
+}
+
+.luxury-footer__social-link svg {
+  width: 1.7rem;
+  height: 1.7rem;
+}
+
+/* --------------------------------------------------------------------------
+   Middle Divider Line (Hairline)
+   -------------------------------------------------------------------------- */
+.luxury-footer__divider {
+  width: 100%;
+  height: 1px;
+  background-color: #E8E2D5;
+  margin-bottom: 5.5rem;
+}
+
+@media screen and (max-width: 749px) {
+  .luxury-footer__divider {
+    margin-bottom: 3.5rem;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Monumental Brand Wordmark Display (CARATOVA) - Full Width Without Image
+   -------------------------------------------------------------------------- */
+.luxury-footer__brand-display {
+  width: 100%;
+  margin-bottom: 4.5rem;
+  overflow: hidden;
+}
+
+.luxury-footer__brand-letters {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  white-space: nowrap;
+  user-select: none;
+  pointer-events: none;
+  line-height: 0.9;
+}
+
+.luxury-footer__letter {
+  display: inline-block;
+  font-family: var(--font-heading-family), "Cormorant Garamond", "Playfair Display", "Didot", "Bodoni MT", Georgia, serif;
+  font-size: clamp(2.8rem, 9.2vw, 13.5rem);
+  font-weight: 400;
+  text-transform: uppercase;
+  color: #E2DACD;
+}
+
+@media screen and (max-width: 640px) {
+  .luxury-footer__letter {
+    font-size: clamp(2rem, 7.8vw, 3.6rem);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Bottom Copyright Row
+   -------------------------------------------------------------------------- */
+.luxury-footer__bottom {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding-top: 1rem;
+}
+
+.luxury-footer__copyright {
+  font-family: var(--font-body-family);
+  font-size: 1.2rem;
+  letter-spacing: 0.08em;
+  color: #8A8072;
+}

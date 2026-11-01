@@ -1,0 +1,202 @@
+{{ 'section-about-page.css' | asset_url | stylesheet_tag }}
+
+{%- style -%}
+  #AboutStory-{{ section.id }} {
+    background-color: {{ section.settings.background_color | default: '#F7F3EB' }};
+    padding-top: {{ section.settings.padding_top }}px;
+    padding-bottom: {{ section.settings.padding_bottom }}px;
+  }
+
+  @media screen and (max-width: 749px) {
+    #AboutStory-{{ section.id }} {
+      padding-top: {{ section.settings.padding_top | times: 0.65 | round }}px;
+      padding-bottom: {{ section.settings.padding_bottom | times: 0.65 | round }}px;
+    }
+  }
+{%- endstyle -%}
+
+<section
+  class="about-story-section"
+  id="AboutStory-{{ section.id }}"
+  aria-label="{{ section.settings.heading | escape }}"
+>
+  <div class="page-width">
+    <div class="about-story__grid">
+      
+      <div class="about-story__content">
+        {%- if section.settings.eyebrow != blank -%}
+          <span class="about-story__eyebrow">{{ section.settings.eyebrow }}</span>
+        {%- endif -%}
+
+        {%- if section.settings.heading != blank -%}
+          <h2 class="about-story__heading">
+            {{ section.settings.heading }}
+          </h2>
+        {%- endif -%}
+
+        {%- if section.settings.text != blank -%}
+          <div class="about-story__text rte">
+            {{ section.settings.text }}
+          </div>
+        {%- endif -%}
+
+        {%- if section.settings.quote_text != blank -%}
+          <div class="about-story__quote-card">
+            <div class="about-story__quote-thumb-wrap">
+              {%- if section.settings.quote_image != blank -%}
+                {{
+                  section.settings.quote_image
+                  | image_url: width: 300
+                  | image_tag:
+                    loading: 'lazy',
+                    class: 'about-story__quote-thumb'
+                }}
+              {%- else -%}
+                <img
+                  src="{{ 'about-story-detail.jpg' | asset_url }}"
+                  alt="Jewelry atelier detail"
+                  class="about-story__quote-thumb"
+                  loading="lazy"
+                  width="180"
+                  height="180"
+                >
+              {%- endif -%}
+            </div>
+            <div class="about-story__quote-body">
+              <blockquote class="about-story__quote-text">
+                &ldquo;{{ section.settings.quote_text }}&rdquo;
+              </blockquote>
+              {%- if section.settings.quote_author != blank -%}
+                <cite class="about-story__quote-author">{{ section.settings.quote_author }}</cite>
+              {%- endif -%}
+            </div>
+          </div>
+        {%- endif -%}
+      </div>
+
+      <div class="about-story__media">
+        <div class="about-story__media-wrap">
+          {%- if section.settings.portrait_image != blank -%}
+            {{
+              section.settings.portrait_image
+              | image_url: width: 1400
+              | image_tag:
+                loading: 'lazy',
+                sizes: '(min-width: 990px) 50vw, 100vw',
+                widths: '400, 600, 800, 1000, 1400',
+                class: 'about-story__portrait-img'
+            }}
+          {%- else -%}
+            <img
+              src="{{ 'about-story-portrait.jpg' | asset_url }}"
+              alt="{{ section.settings.heading | escape }}"
+              class="about-story__portrait-img"
+              loading="lazy"
+              width="1200"
+              height="1500"
+            >
+          {%- endif -%}
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "About Story & Founder",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background Color",
+      "default": "#F7F3EB"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow Text",
+      "default": "OUR ORIGIN"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Born From a Passion for Enduring Beauty"
+    },
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "Story Description",
+      "default": "<p>Caratova was founded on a singular conviction: that fine jewelry should not be fleeting ornament, but an enduring personal talisman. In an era often dominated by haste and mass repetition, we returned to the sacred, unhurried cadence of the traditional jeweler’s bench.</p><p>Every silhouette is conceived with deliberate stillness. We work exclusively with ethically sourced noble metals and traceable gemstones, allowing each curve, bezel, and prong to be finished by human touch. These are pieces made not merely to be worn, but to be lived in, treasured, and passed down as timeless heirlooms.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Quote Card"
+    },
+    {
+      "type": "image_picker",
+      "id": "quote_image",
+      "label": "Quote Thumbnail Image"
+    },
+    {
+      "type": "textarea",
+      "id": "quote_text",
+      "label": "Quote Text",
+      "default": "Every detail is considered. Every gemstone holds an unbroken whisper."
+    },
+    {
+      "type": "text",
+      "id": "quote_author",
+      "label": "Quote Attribution",
+      "default": "— Founder & Creative Director"
+    },
+    {
+      "type": "header",
+      "content": "Portrait Media"
+    },
+    {
+      "type": "image_picker",
+      "id": "portrait_image",
+      "label": "Portrait Image"
+    },
+    {
+      "type": "header",
+      "content": "Section Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 40,
+      "max": 160,
+      "step": 10,
+      "unit": "px",
+      "label": "Padding Top",
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 40,
+      "max": 160,
+      "step": 10,
+      "unit": "px",
+      "label": "Padding Bottom",
+      "default": 100
+    }
+  ],
+  "presets": [
+    {
+      "name": "About Story & Founder",
+      "settings": {
+        "eyebrow": "OUR ORIGIN",
+        "heading": "Born From a Passion for Enduring Beauty"
+      }
+    }
+  ]
+}
+{% endschema %}
+

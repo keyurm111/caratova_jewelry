@@ -18,6 +18,97 @@
   {{ 'component-list-social.css' | asset_url | stylesheet_tag }}
 {% endif %}
 
+{%- if section.settings.enable_marquee and section.blocks.size > 0 -%}
+  <style>
+    .announcement-marquee {
+      position: relative;
+      width: 100%;
+      overflow: hidden;
+      white-space: nowrap;
+      background-color: rgb(var(--color-background));
+      color: rgb(var(--color-foreground));
+      padding: 0.95rem 0;
+      display: flex;
+      user-select: none;
+    }
+    .announcement-marquee__track {
+      display: inline-flex;
+      width: max-content;
+      will-change: transform;
+      animation: announcement-scroll {{ section.settings.marquee_speed | default: 35 }}s linear infinite;
+    }
+    .announcement-marquee:hover .announcement-marquee__track {
+      animation-play-state: paused;
+    }
+    @keyframes announcement-scroll {
+      0% {
+        transform: translate3d(0, 0, 0);
+      }
+      100% {
+        transform: translate3d(-50%, 0, 0);
+      }
+    }
+    .announcement-marquee__content {
+      display: inline-flex;
+      align-items: center;
+      flex-shrink: 0;
+    }
+    .announcement-marquee__item {
+      display: inline-flex;
+      align-items: center;
+      font-family: var(--font-body-family);
+      font-size: 1.15rem;
+      font-weight: 500;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: inherit;
+      padding: 0 1.8rem;
+    }
+    .announcement-marquee__link {
+      color: inherit;
+      text-decoration: none;
+      transition: opacity 0.2s ease;
+    }
+    .announcement-marquee__link:hover {
+      opacity: 0.75;
+    }
+    .announcement-marquee__dot {
+      display: inline-block;
+      opacity: 0.5;
+      font-size: 0.9rem;
+      padding: 0 0.4rem;
+    }
+  </style>
+
+  <div
+    class="utility-bar color-{{ section.settings.color_scheme }} gradient"
+    role="region"
+    aria-label="{{ 'sections.header.announcement' | t }}"
+  >
+    <div class="announcement-marquee">
+      <div class="announcement-marquee__track">
+        {%- for i in (1..4) -%}
+          <div class="announcement-marquee__content" aria-hidden="{% if forloop.first %}false{% else %}true{% endif %}">
+            {%- for block in section.blocks -%}
+              {%- if block.settings.text != blank -%}
+                <span class="announcement-marquee__item" {{ block.shopify_attributes }}>
+                  {%- if block.settings.link != blank -%}
+                    <a href="{{ block.settings.link }}" class="announcement-marquee__link">
+                      {{ block.settings.text | escape }}
+                    </a>
+                  {%- else -%}
+                    {{ block.settings.text | escape }}
+                  {%- endif -%}
+                </span>
+                <span class="announcement-marquee__dot" aria-hidden="true">&bull;</span>
+              {%- endif -%}
+            {%- endfor -%}
+          </div>
+        {%- endfor -%}
+      </div>
+    </div>
+  </div>
+{%- else -%}
 <div
   class="utility-bar color-{{ section.settings.color_scheme }} gradient{% if section.settings.show_line_separator and section.blocks.size > 0 %} utility-bar--bottom-border{% elsif section.settings.show_line_separator and section.settings.show_social and social_icons%} utility-bar--bottom-border-social-only{% endif %}{% if section.settings.enable_country_selector or section.settings.enable_language_selector %} header-localization{% endif %}"
 >
@@ -161,6 +252,7 @@
     </div>
   </div>
 </div>
+{%- endif -%}
 
 {% schema %}
 {
@@ -171,6 +263,22 @@
     "groups": ["header"]
   },
   "settings": [
+    {
+      "type": "checkbox",
+      "id": "enable_marquee",
+      "default": true,
+      "label": "Enable Infinite Marquee Loop (Right to Left)"
+    },
+    {
+      "type": "range",
+      "id": "marquee_speed",
+      "min": 10,
+      "max": 60,
+      "step": 5,
+      "unit": "s",
+      "default": 35,
+      "label": "Marquee scroll duration"
+    },
     {
       "type": "checkbox",
       "id": "auto_rotate",

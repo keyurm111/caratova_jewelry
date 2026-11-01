@@ -1,0 +1,190 @@
+{{ 'section-shop-by-category.css' | asset_url | stylesheet_tag }}
+
+{%- liquid
+  assign limit_count = section.settings.collections_to_show | default: 4
+  assign columns_desktop = section.settings.columns_desktop | default: 4
+  assign selected_collections = section.settings.collection_list
+  assign has_selected = false
+  if selected_collections != blank and selected_collections.size > 0
+    assign has_selected = true
+  endif
+-%}
+
+<div class="shop-by-category-section color-{{ section.settings.color_scheme }} gradient">
+  <div class="page-width">
+    {%- if section.settings.title != blank -%}
+      <div class="shop-by-category__header">
+        <span class="shop-by-category__eyebrow">{{ section.settings.title }}</span>
+      </div>
+    {%- endif -%}
+
+    <div
+      class="shop-by-category__grid"
+      style="--desktop-cols: {{ columns_desktop }};"
+    >
+      {%- if has_selected -%}
+        {%- comment -%} Admin chose collections in section settings {%- endcomment -%}
+        {%- for col in selected_collections limit: limit_count -%}
+          {%- liquid
+            assign category_image = col.image | default: col.featured_image | default: col.products.first.featured_image | default: col.products.first.featured_media.preview_image
+            assign category_title = col.title
+            assign category_link = col.url
+          -%}
+          <a
+            href="{{ category_link }}"
+            class="shop-by-category__card"
+            aria-label="{{ category_title | default: 'Collection' | escape }}"
+          >
+            <div class="shop-by-category__image-wrap">
+              {%- if category_image != blank -%}
+                {{
+                  category_image
+                  | image_url: width: 800
+                  | image_tag:
+                    loading: 'lazy',
+                    sizes: '(min-width: 990px) 25vw, (min-width: 750px) 50vw, 50vw',
+                    widths: '300, 400, 600, 800',
+                    alt: category_title,
+                    class: 'shop-by-category__image'
+                }}
+              {%- else -%}
+                <div class="shop-by-category__placeholder">
+                  {%- assign placeholder_idx = forloop.index | modulo: 6 | plus: 1 -%}
+                  {{ 'collection-' | append: placeholder_idx | placeholder_svg_tag: 'placeholder-svg' }}
+                </div>
+              {%- endif -%}
+            </div>
+
+            {%- if category_title != blank -%}
+              <h3 class="shop-by-category__title">
+                {{ category_title }}
+              </h3>
+            {%- endif -%}
+          </a>
+        {%- endfor -%}
+
+      {%- else -%}
+        {%- comment -%} Direct fetch from store collections {%- endcomment -%}
+        {%- assign rendered_count = 0 -%}
+        {%- for col in collections -%}
+          {%- unless col.handle == 'frontpage' -%}
+            {%- liquid
+              assign category_image = col.image | default: col.featured_image | default: col.products.first.featured_image | default: col.products.first.featured_media.preview_image
+              assign category_title = col.title
+              assign category_link = col.url
+              assign rendered_count = rendered_count | plus: 1
+            -%}
+            <a
+              href="{{ category_link }}"
+              class="shop-by-category__card"
+              aria-label="{{ category_title | default: 'Collection' | escape }}"
+            >
+              <div class="shop-by-category__image-wrap">
+                {%- if category_image != blank -%}
+                  {{
+                    category_image
+                    | image_url: width: 800
+                    | image_tag:
+                      loading: 'lazy',
+                      sizes: '(min-width: 990px) 25vw, (min-width: 750px) 50vw, 50vw',
+                      widths: '300, 400, 600, 800',
+                      alt: category_title,
+                      class: 'shop-by-category__image'
+                  }}
+                {%- else -%}
+                  <div class="shop-by-category__placeholder">
+                    {%- assign placeholder_idx = rendered_count | modulo: 6 | plus: 1 -%}
+                    {{ 'collection-' | append: placeholder_idx | placeholder_svg_tag: 'placeholder-svg' }}
+                  </div>
+                {%- endif -%}
+              </div>
+
+              {%- if category_title != blank -%}
+                <h3 class="shop-by-category__title">
+                  {{ category_title }}
+                </h3>
+              {%- endif -%}
+            </a>
+            {%- if rendered_count >= limit_count -%}{%- break -%}{%- endif -%}
+          {%- endunless -%}
+        {%- endfor -%}
+
+        {%- if rendered_count == 0 -%}
+          {%- comment -%} Fallback if store has no collections yet {%- endcomment -%}
+          {%- assign sample_categories = 'RINGS,NECKLACES,EARRINGS,BRACELETS' | split: ',' -%}
+          {%- for sample in sample_categories -%}
+            <a href="{{ routes.collections_url }}" class="shop-by-category__card" aria-label="{{ sample }}">
+              <div class="shop-by-category__image-wrap">
+                <div class="shop-by-category__placeholder">
+                  {{ 'collection-' | append: forloop.index | placeholder_svg_tag: 'placeholder-svg' }}
+                </div>
+              </div>
+              <h3 class="shop-by-category__title">{{ sample }}</h3>
+            </a>
+          {%- endfor -%}
+        {%- endif -%}
+
+      {%- endif -%}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Shop by Category",
+  "tag": "section",
+  "class": "section",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Heading",
+      "default": "SHOP BY CATEGORY"
+    },
+    {
+      "type": "collection_list",
+      "id": "collection_list",
+      "label": "Collections",
+      "limit": 12,
+      "info": "Select collections to show. Leave empty to automatically fetch all collections directly from your store."
+    },
+    {
+      "type": "range",
+      "id": "collections_to_show",
+      "min": 2,
+      "max": 12,
+      "step": 1,
+      "default": 4,
+      "label": "Number of collections to show"
+    },
+    {
+      "type": "range",
+      "id": "columns_desktop",
+      "min": 2,
+      "max": 6,
+      "step": 1,
+      "default": 4,
+      "label": "Number of columns on desktop"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-1"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Shop by Category",
+      "settings": {
+        "title": "SHOP BY CATEGORY",
+        "collections_to_show": 4,
+        "columns_desktop": 4
+      }
+    }
+  ]
+}
+{% endschema %}

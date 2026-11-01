@@ -98,7 +98,7 @@
 .hero-slider__overlay {
   position: absolute;
   inset: 0;
-  background-color: #000000;
+  background-color: #1c1a16;
   pointer-events: none;
   z-index: 1;
   transition: opacity 0.3s ease;
@@ -123,13 +123,13 @@
   inset: 0;
   z-index: 11;
   display: flex;
-  padding: 3rem;
+  padding: 4rem var(--page-padding-side, clamp(6.4rem, 9.5vw, 15rem)) !important;
   pointer-events: none;
 }
 
 @media screen and (max-width: 749px) {
   .hero-slider__content-wrap {
-    padding: 2rem 1.5rem 4rem 1.5rem;
+    padding: 2rem var(--page-padding-side, 2rem) 4rem var(--page-padding-side, 2rem);
   }
 }
 
@@ -192,6 +192,18 @@
   padding: 0;
 }
 
+.hero-slider__eyebrow {
+  display: block;
+  font-family: var(--font-body-family);
+  font-size: 1.15rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: inherit;
+  opacity: 0.85;
+  margin-bottom: 1.2rem;
+  font-weight: 500;
+}
+
 .hero-slider__heading {
   margin: 0 0 1rem 0;
   font-weight: 600;
@@ -229,6 +241,21 @@
   pointer-events: auto;
   position: relative;
   z-index: 15;
+  background: transparent !important;
+  color: #F7F3EB !important;
+  border: 1px solid rgba(247, 243, 235, 0.85) !important;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  font-family: var(--font-body-family);
+  font-size: 1.15rem;
+  padding: 1.3rem 2.8rem;
+  transition: all 0.3s ease;
+}
+
+.hero-slider__btn:hover {
+  background: #F7F3EB !important;
+  color: #1c1a16 !important;
+  border-color: #F7F3EB !important;
 }
 
 /* Arrows Navigation */
@@ -298,7 +325,7 @@
   gap: 0.8rem;
   padding: 0.6rem 1.2rem;
   border-radius: 3rem;
-  background: rgba(0, 0, 0, 0.28);
+  background: rgba(28, 26, 22, 0.45);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
 }
@@ -307,7 +334,7 @@
   width: 0.9rem;
   height: 0.9rem;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.45);
+  background: rgba(247, 243, 235, 0.45);
   border: none;
   padding: 0;
   cursor: pointer;
@@ -315,11 +342,11 @@
 }
 
 .hero-slider__dot:hover {
-  background: rgba(255, 255, 255, 0.8);
+  background: rgba(247, 243, 235, 0.85);
 }
 
 .hero-slider__dot.is-active {
-  background: #ffffff;
+  background: #F7F3EB;
   width: 2.8rem;
   border-radius: 1rem;
 }

@@ -1,0 +1,146 @@
+{{ 'section-about-page.css' | asset_url | stylesheet_tag }}
+
+{%- style -%}
+  #AboutHero-{{ section.id }} {
+    padding-top: {{ section.settings.padding_top }}px;
+    padding-bottom: {{ section.settings.padding_bottom }}px;
+  }
+
+  #AboutHero-{{ section.id }} .about-hero__overlay {
+    background: radial-gradient(
+      circle at center,
+      rgba(22, 20, 18, {{ section.settings.overlay_opacity | times: 0.6 | divided_by: 100.0 }}) 0%,
+      rgba(16, 14, 12, {{ section.settings.overlay_opacity | divided_by: 100.0 }}) 100%
+    );
+  }
+
+  @media screen and (max-width: 749px) {
+    #AboutHero-{{ section.id }} {
+      padding-top: {{ section.settings.padding_top | times: 0.7 | round }}px;
+      padding-bottom: {{ section.settings.padding_bottom | times: 0.7 | round }}px;
+    }
+  }
+{%- endstyle -%}
+
+<section
+  class="about-hero-section"
+  id="AboutHero-{{ section.id }}"
+  aria-label="{{ section.settings.heading | escape }}"
+>
+  {%- if section.settings.image != blank -%}
+    {{
+      section.settings.image
+      | image_url: width: 2400
+      | image_tag:
+        loading: 'eager',
+        fetchpriority: 'high',
+        sizes: '100vw',
+        widths: '600, 900, 1200, 1600, 2000, 2400',
+        class: 'about-hero__bg'
+    }}
+  {%- else -%}
+    <img
+      src="{{ 'about-hero-atelier.jpg' | asset_url }}"
+      alt="{{ section.settings.heading | escape }}"
+      class="about-hero__bg"
+      loading="eager"
+      fetchpriority="high"
+      width="2000"
+      height="1333"
+    >
+  {%- endif -%}
+
+  <div class="about-hero__overlay" aria-hidden="true"></div>
+
+  <div class="page-width about-hero__content">
+    {%- if section.settings.eyebrow != blank -%}
+      <span class="about-hero__eyebrow">{{ section.settings.eyebrow }}</span>
+    {%- endif -%}
+
+    {%- if section.settings.heading != blank -%}
+      <h1 class="about-hero__heading">
+        {{ section.settings.heading | newline_to_br }}
+      </h1>
+    {%- endif -%}
+
+    {%- if section.settings.subtext != blank -%}
+      <p class="about-hero__subtext">
+        {{ section.settings.subtext }}
+      </p>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "About Hero",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Hero Background Image"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow Text",
+      "default": "ABOUT CARATOVA"
+    },
+    {
+      "type": "textarea",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Crafted In Silence,\nWorn In Splendor"
+    },
+    {
+      "type": "textarea",
+      "id": "subtext",
+      "label": "Subtext",
+      "default": "A journey of quiet devotion, noble metals, and gemstones shaped not for noise, but for eternity."
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "min": 0,
+      "max": 90,
+      "step": 5,
+      "unit": "%",
+      "label": "Dark Overlay Opacity",
+      "default": 65
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 60,
+      "max": 200,
+      "step": 10,
+      "unit": "px",
+      "label": "Padding Top",
+      "default": 140
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 60,
+      "max": 200,
+      "step": 10,
+      "unit": "px",
+      "label": "Padding Bottom",
+      "default": 140
+    }
+  ],
+  "presets": [
+    {
+      "name": "About Hero",
+      "settings": {
+        "eyebrow": "ABOUT CARATOVA",
+        "heading": "Crafted In Silence,\nWorn In Splendor",
+        "subtext": "A journey of quiet devotion, noble metals, and gemstones shaped not for noise, but for eternity."
+      }
+    }
+  ]
+}
+{% endschema %}
+

@@ -1,0 +1,234 @@
+{{ 'section-new-arrivals-marquee.css' | asset_url | stylesheet_tag }}
+{{ 'component-luxury-product-card.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'component-luxury-product-card.js' | asset_url }}" defer="defer"></script>
+
+{%- liquid
+  assign limit_count = section.settings.products_to_show | default: 10
+  assign columns_desktop = section.settings.columns_desktop | default: 4
+
+  assign selected_products = section.settings.product_list
+  assign collection = section.settings.collection
+
+  assign has_selected_products = false
+  if selected_products != blank and selected_products.size > 0
+    assign has_selected_products = true
+  endif
+
+  assign has_collection = false
+  if collection != blank and collection.products.size > 0
+    assign has_collection = true
+  endif
+
+  assign has_all_products = false
+  if collections.all.products.size > 0
+    assign has_all_products = true
+  endif
+-%}
+
+<div class="new-arrivals-marquee-section color-{{ section.settings.color_scheme }} gradient">
+  <div class="page-width">
+    <div class="new-arrivals__header">
+      <div class="new-arrivals__header-text">
+        {%- if section.settings.eyebrow != blank -%}
+          <span class="new-arrivals__eyebrow">{{ section.settings.eyebrow }}</span>
+        {%- endif -%}
+
+        {%- if section.settings.heading != blank -%}
+          <h2 class="new-arrivals__heading">
+            {{ section.settings.heading }}
+          </h2>
+        {%- endif -%}
+      </div>
+
+      <div class="new-arrivals__header-actions">
+        {%- if section.settings.view_all_label != blank -%}
+          <a
+            href="{{ section.settings.view_all_link | default: collection.url | default: routes.all_products_collection_url }}"
+            class="new-arrivals__view-all"
+          >
+            {{ section.settings.view_all_label }}
+          </a>
+        {%- endif -%}
+
+        <div class="new-arrivals__nav" aria-label="Slider controls">
+          <button
+            type="button"
+            class="new-arrivals__btn new-arrivals__btn--prev"
+            data-target="NewArrivalsTrack-{{ section.id }}"
+            aria-label="Previous new arrival"
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </button>
+          <button
+            type="button"
+            class="new-arrivals__btn new-arrivals__btn--next"
+            data-target="NewArrivalsTrack-{{ section.id }}"
+            aria-label="Next new arrival"
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="new-arrivals__slider">
+      <div
+        class="new-arrivals__track"
+        id="NewArrivalsTrack-{{ section.id }}"
+        style="--desktop-cols: {{ columns_desktop }};"
+      >
+        {%- if has_selected_products -%}
+          {%- for product in selected_products limit: limit_count -%}
+            <div class="new-arrivals__card-wrap">
+              {%- render 'luxury-product-card', card_product: product -%}
+            </div>
+          {%- endfor -%}
+
+        {%- elsif has_collection -%}
+          {%- for product in collection.products limit: limit_count -%}
+            <div class="new-arrivals__card-wrap">
+              {%- render 'luxury-product-card', card_product: product -%}
+            </div>
+          {%- endfor -%}
+
+        {%- elsif has_all_products -%}
+          {%- for product in collections.all.products limit: limit_count -%}
+            <div class="new-arrivals__card-wrap">
+              {%- render 'luxury-product-card', card_product: product -%}
+            </div>
+          {%- endfor -%}
+
+        {%- else -%}
+          {%- assign sample_titles = 'Stillwater Signet,Aria Solitaire,Hourline Pendant,Thread Necklace,Duet Stacking Ring,Horizon Pavé Band,Sculpted Hoop Earrings,Linked Cable Bracelet' | split: ',' -%}
+          {%- assign sample_prices = '$660.00,$2,380.00,$760.00,$590.00,$680.00,$1,150.00,$420.00,$890.00' | split: ',' -%}
+          {%- for sample in sample_titles limit: limit_count -%}
+            {%- assign s_idx = forloop.index0 -%}
+            <div class="new-arrivals__card-wrap">
+              {%- render 'luxury-product-card', sample_title: sample, sample_price: sample_prices[s_idx], sample_idx: forloop.index -%}
+            </div>
+          {%- endfor -%}
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function () {
+    function initNewArrivalsSliders() {
+      document.querySelectorAll('.new-arrivals-marquee-section').forEach(function (section) {
+        var track = section.querySelector('.new-arrivals__track');
+        var prevBtn = section.querySelector('.new-arrivals__btn--prev');
+        var nextBtn = section.querySelector('.new-arrivals__btn--next');
+
+        if (!track || !prevBtn || !nextBtn) return;
+
+        prevBtn.addEventListener('click', function () {
+          var scrollAmount = track.clientWidth * 0.75;
+          track.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+        });
+
+        nextBtn.addEventListener('click', function () {
+          var scrollAmount = track.clientWidth * 0.75;
+          track.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+        });
+      });
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initNewArrivalsSliders);
+    } else {
+      initNewArrivalsSliders();
+    }
+    document.addEventListener('shopify:section:load', initNewArrivalsSliders);
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "New Arrivals",
+  "tag": "section",
+  "class": "section",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow Text",
+      "default": "NEW ARRIVALS"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "New this season"
+    },
+    {
+      "type": "product_list",
+      "id": "product_list",
+      "label": "Select New Arrival Products",
+      "limit": 12,
+      "info": "Pick new arrival products directly. If left empty, products will be fetched from the selected collection or store."
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Collection",
+      "info": "Optional collection to fetch products from if product list is empty"
+    },
+    {
+      "type": "range",
+      "id": "products_to_show",
+      "min": 4,
+      "max": 12,
+      "step": 1,
+      "default": 8,
+      "label": "Number of products to show"
+    },
+    {
+      "type": "range",
+      "id": "columns_desktop",
+      "min": 3,
+      "max": 5,
+      "step": 1,
+      "default": 4,
+      "label": "Number of columns on desktop"
+    },
+    {
+      "type": "text",
+      "id": "view_all_label",
+      "label": "View All Link Label",
+      "default": "VIEW ALL NEW"
+    },
+    {
+      "type": "url",
+      "id": "view_all_link",
+      "label": "View All URL"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-1"
+    }
+  ],
+  "presets": [
+    {
+      "name": "New Arrivals",
+      "settings": {
+        "eyebrow": "NEW ARRIVALS",
+        "heading": "New this season",
+        "products_to_show": 8,
+        "columns_desktop": 4,
+        "view_all_label": "VIEW ALL NEW"
+      }
+    }
+  ]
+}
+{% endschema %}

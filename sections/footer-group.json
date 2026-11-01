@@ -1,1 +1,41 @@
-{"name":"t:sections.footer.name","type":"footer","sections":{"footer":{"type":"footer","settings":{"color_scheme":"scheme-1","newsletter_enable":true,"newsletter_heading":"Subscribe to our emails","enable_follow_on_shop":true,"show_social":true,"enable_country_selector":true,"enable_language_selector":true,"payment_enable":true,"show_policy":true,"margin_top":0,"padding_top":36,"padding_bottom":36}}},"order":["footer"]}
+{
+  "name": "Footer",
+  "type": "footer",
+  "sections": {
+    "luxury_cta": {
+      "type": "luxury-cta-banner",
+      "settings": {
+        "heading": "Find The Piece That Tells Your Story",
+        "subtext": "Every AURELLE creation is designed to capture meaningful moments and become a timeless part of your journey. Handcrafted jewelry that lasts.",
+        "cta_type": "newsletter",
+        "newsletter_placeholder": "Your email address",
+        "newsletter_button_label": "Subscribe",
+        "button_label": "CONTACT US",
+        "button_link": "shopify://pages/contact",
+        "bottom_blend_color": "#F7F3EB",
+        "gradient_height": 280,
+        "overlay_opacity": 25,
+        "section_min_height": 700
+      }
+    },
+    "footer": {
+      "type": "footer",
+      "settings": {
+        "color_scheme": "scheme-1",
+        "menu": "footer",
+        "newsletter_enable": true,
+        "newsletter_eyebrow": "NEWSLETTER",
+        "newsletter_heading": "Quiet updates, occasionally.",
+        "newsletter_placeholder": "Email address",
+        "show_social": true,
+        "show_wordmark": true,
+        "wordmark_text": "CARATOVA",
+        "copyright_text": "Caratova. All rights reserved."
+      }
+    }
+  },
+  "order": [
+    "luxury_cta",
+    "footer"
+  ]
+}

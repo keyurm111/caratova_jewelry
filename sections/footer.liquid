@@ -1,383 +1,387 @@
-{% comment %}theme-check-disable UndefinedObject{% endcomment %}
-{{ 'section-footer.css' | asset_url | stylesheet_tag }}
-{{ 'component-newsletter.css' | asset_url | stylesheet_tag }}
-{{ 'component-list-menu.css' | asset_url | stylesheet_tag }}
-{{ 'component-list-payment.css' | asset_url | stylesheet_tag }}
-{{ 'component-list-social.css' | asset_url | stylesheet_tag }}
+{% comment %}
+  Luxury Editorial Atelier Footer (Caratova)
+  - Dynamic Menu Navigation: Main menu items are rendered as column headings,
+    and their nested inner items are rendered as options under each heading.
+  - Also supports admin blocks (Menu, Text, Image, Brand Information).
+  - Underline Newsletter Form ("Quiet updates, occasionally.")
+  - Full-width Monumental Wordmark (CARATOVA) without image.
+  - Clean Copyright line: "© 2026 Caratova. All rights reserved."
+  - Exact navbar side-padding matching across all viewports.
+{% endcomment %}
 
-{%- style -%}
-  .footer {
-    margin-top: {{ section.settings.margin_top | times: 0.75 | round: 0 }}px;
-  }
+{{ 'section-luxury-footer.css' | asset_url | stylesheet_tag }}
 
-  .section-{{ section.id }}-padding {
-    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
-    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
-  }
+<footer class="luxury-footer color-{{ section.settings.color_scheme }} gradient" id="LuxuryFooter-{{ section.id }}">
+  <div class="luxury-footer__inner page-width">
+    
+    {%- comment -%} 1. Top Section: Navigation Columns + Newsletter {%- endcomment -%}
+    <div class="luxury-footer__top">
+      
+      {%- comment -%} Navigation Columns (Main option as heading, inner options as links) {%- endcomment -%}
+      <div class="luxury-footer__nav-cols">
+        
+        {%- comment -%} Determine if menu has main items with nested inner items {%- endcomment -%}
+        {%- assign footer_menu = section.settings.menu | default: linklists.footer -%}
+        {%- assign has_nested_menu = false -%}
+        {%- if footer_menu != blank and footer_menu.links.size > 0 -%}
+          {%- for main_link in footer_menu.links -%}
+            {%- if main_link.links.size > 0 -%}
+              {%- assign has_nested_menu = true -%}
+              {%- break -%}
+            {%- endif -%}
+          {%- endfor -%}
+        {%- endif -%}
 
-  @media screen and (min-width: 750px) {
-    .footer {
-      margin-top: {{ section.settings.margin_top }}px;
-    }
-
-    .section-{{ section.id }}-padding {
-      padding-top: {{ section.settings.padding_top }}px;
-      padding-bottom: {{ section.settings.padding_bottom }}px;
-    }
-  }
-{%- endstyle -%}
-
-<footer class="footer color-{{ section.settings.color_scheme }} gradient section-{{ section.id }}-padding">
-  {%- liquid
-    assign has_social_icons = true
-    if settings.social_facebook_link == blank and settings.social_instagram_link == blank and settings.social_youtube_link == blank and settings.social_tiktok_link == blank and settings.social_twitter_link == blank and settings.social_pinterest_link == blank and settings.social_snapchat_link == blank and settings.social_tumblr_link == blank and settings.social_vimeo_link == blank
-      assign has_social_icons = false
-    endif
-
-    if settings.brand_image == blank and settings.brand_headline == blank and settings.brand_description == blank
-      assign brand_empty = true
-    endif
-
-    if section.blocks.size == 1 and section.blocks[0].type == 'brand_information' and brand_empty and has_social_icons == false and section.settings.newsletter_enable == false and section.settings.enable_follow_on_shop == false
-      assign only_empty_brand = true
-    endif
-  -%}
-  {%- if section.blocks.size > 0
-    or section.settings.newsletter_enable
-    or section.settings.show_social
-    and has_social_icons == true
-    or section.settings.enable_follow_on_shop
-  -%}
-    {%- unless only_empty_brand -%}
-      <div class="footer__content-top page-width">
-        {%- if section.blocks.size > 0 -%}
-          {%- liquid
-            if section.blocks.size == 9
-              assign footer_grid_class = 'grid--3-col-tablet'
-            elsif section.blocks.size > 6
-              assign footer_grid_class = 'grid--4-col-desktop'
-            elsif section.blocks.size > 4
-              assign footer_grid_class = 'grid--3-col-tablet'
-            endif
-          -%}
-          <div
-            class="footer__blocks-wrapper grid grid--1-col grid--2-col grid--4-col-tablet {{ footer_grid_class }}{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}"
-            {% if settings.animations_reveal_on_scroll %}
-              data-cascade
-            {% endif %}
-          >
-            {%- for block in section.blocks -%}
-              <div
-                class="footer-block grid__item{% if block.type == 'link_list' %} footer-block--menu{% endif %}{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}"
-                {{ block.shopify_attributes }}
-                {% if settings.animations_reveal_on_scroll %}
-                  data-cascade
-                  style="--animation-order: {{ forloop.index }};"
-                {% endif %}
-              >
-                {%- if block.settings.heading != blank -%}
-                  <h2 class="footer-block__heading inline-richtext">{{- block.settings.heading -}}</h2>
+        {%- if has_nested_menu -%}
+          {%- comment -%} Case 1: Main menu items as column headings, nested sub-items as options {%- endcomment -%}
+          {%- for main_item in footer_menu.links -%}
+            <div class="luxury-footer__col">
+              <h3 class="luxury-footer__col-title">
+                {%- if main_item.url != blank and main_item.url != '#' -%}
+                  <a href="{{ main_item.url }}" class="luxury-footer__col-title-link">{{ main_item.title | escape }}</a>
+                {%- else -%}
+                  {{ main_item.title | escape }}
                 {%- endif -%}
+              </h3>
 
-                {%- case block.type -%}
-                  {%- when '@app' -%}
-                    {% render block %}
-                  {%- when 'text' -%}
-                    <div class="footer-block__details-content rte">
-                      {{ block.settings.subtext }}
-                    </div>
-                  {%- when 'link_list' -%}
-                    {%- if block.settings.menu != blank -%}
-                      <ul class="footer-block__details-content list-unstyled">
-                        {%- for link in block.settings.menu.links -%}
+              {%- if main_item.links.size > 0 -%}
+                <ul class="luxury-footer__links">
+                  {%- for inner_item in main_item.links -%}
+                    <li>
+                      <a href="{{ inner_item.url }}" class="luxury-footer__link{% if inner_item.active %} luxury-footer__link--active{% endif %}">
+                        {{ inner_item.title | escape }}
+                      </a>
+                    </li>
+                  {%- endfor -%}
+                </ul>
+              {%- endif -%}
+            </div>
+          {%- endfor -%}
+
+        {%- elsif section.blocks.size > 0 -%}
+          {%- comment -%} Case 2: Render admin-added blocks from Theme Customizer {%- endcomment -%}
+          {%- for block in section.blocks -%}
+            <div class="luxury-footer__col luxury-footer__col--{{ block.type }}" {{ block.shopify_attributes }}>
+              {%- case block.type -%}
+                {%- when 'link_list' -%}
+                  {%- assign block_menu = block.settings.menu -%}
+
+                  {%- comment -%} Check if this block menu has nested items {%- endcomment -%}
+                  {%- assign block_has_nested = false -%}
+                  {%- if block_menu != blank and block_menu.links.size > 0 -%}
+                    {%- for l in block_menu.links -%}
+                      {%- if l.links.size > 0 -%}
+                        {%- assign block_has_nested = true -%}
+                        {%- break -%}
+                      {%- endif -%}
+                    {%- endfor -%}
+                  {%- endif -%}
+
+                  {%- if block_has_nested -%}
+                    {%- for main_item in block_menu.links -%}
+                      <div class="luxury-footer__nested-subcol">
+                        <h3 class="luxury-footer__col-title">
+                          {%- if main_item.url != blank and main_item.url != '#' -%}
+                            <a href="{{ main_item.url }}" class="luxury-footer__col-title-link">{{ main_item.title | escape }}</a>
+                          {%- else -%}
+                            {{ main_item.title | escape }}
+                          {%- endif -%}
+                        </h3>
+                        {%- if main_item.links.size > 0 -%}
+                          <ul class="luxury-footer__links">
+                            {%- for inner_item in main_item.links -%}
+                              <li>
+                                <a href="{{ inner_item.url }}" class="luxury-footer__link{% if inner_item.active %} luxury-footer__link--active{% endif %}">
+                                  {{ inner_item.title | escape }}
+                                </a>
+                              </li>
+                            {%- endfor -%}
+                          </ul>
+                        {%- endif -%}
+                      </div>
+                    {%- endfor -%}
+                  {%- else -%}
+                    {%- if block.settings.heading != blank -%}
+                      <h3 class="luxury-footer__col-title">{{ block.settings.heading | escape }}</h3>
+                    {%- endif -%}
+
+                    {%- assign menu_links = block_menu.links -%}
+                    {%- if menu_links == blank and block.settings.heading != blank -%}
+                      {%- assign heading_handle = block.settings.heading | handle -%}
+                      {%- assign menu_links = linklists[heading_handle].links -%}
+                    {%- endif -%}
+
+                    {%- if menu_links != blank and menu_links.size > 0 -%}
+                      <ul class="luxury-footer__links">
+                        {%- for link in menu_links -%}
                           <li>
-                            <a
-                              href="{{ link.url }}"
-                              class="link link--text list-menu__item list-menu__item--link{% if link.active %} list-menu__item--active{% endif %}"
-                            >
+                            <a href="{{ link.url }}" class="luxury-footer__link{% if link.active %} luxury-footer__link--active{% endif %}">
                               {{ link.title | escape }}
                             </a>
                           </li>
                         {%- endfor -%}
                       </ul>
                     {%- endif -%}
-                  {%- when 'brand_information' -%}
-                    <div class="footer-block__brand-info">
-                      {%- if settings.brand_image != blank -%}
-                        {%- assign brand_image_height = settings.brand_image_width
-                          | divided_by: settings.brand_image.aspect_ratio
-                        -%}
-                        <div
-                          class="footer-block__image-wrapper"
-                          style="max-width: min(100%, {{ settings.brand_image_width }}px);"
-                        >
-                          {{
-                            settings.brand_image
-                            | image_url: width: 1100
-                            | image_tag:
-                              loading: 'lazy',
-                              widths: '50, 100, 150, 200, 300, 400, 550, 800, 1100',
-                              height: brand_image_height,
-                              width: settings.brand_image_width
-                          }}
-                        </div>
-                      {%- endif -%}
-                      {%- if settings.brand_headline != blank -%}
-                        <h2 class="footer-block__heading rte">{{ settings.brand_headline }}</h2>
-                      {%- endif -%}
-                      {%- if settings.brand_description != blank -%}
-                        <div class="rte">{{ settings.brand_description }}</div>
-                      {%- endif -%}
-                      {%- if block.settings.show_social and has_social_icons -%}
-                        {%- render 'social-icons', class: 'footer__list-social' -%}
-                      {%- endif -%}
-                    </div>
-                  {%- when 'image' -%}
-                    <div class="footer-block__details-content footer-block-image {{ block.settings.alignment }}">
-                      {%- if block.settings.image != blank -%}
-                        {%- assign image_size_2x = block.settings.image_width | times: 2 | at_most: 5760 -%}
-                        <div
-                          class="footer-block__image-wrapper"
-                          style="max-width: min(100%, {{ block.settings.image_width }}px);"
-                        >
-                          <img
-                            srcset="{{ block.settings.image | image_url: width: block.settings.image_width }}, {{ block.settings.image | image_url: width: image_size_2x }} 2x"
-                            src="{{ block.settings.image | image_url: width: 760 }}"
-                            alt="{{ block.settings.image.alt | escape }}"
-                            loading="lazy"
-                            width="{{ block.settings.image.width }}"
-                            height="{{ block.settings.image.height }}"
-                          >
-                        </div>
-                      {%- else -%}
-                        {{ 'image' | placeholder_svg_tag: 'placeholder-svg placeholder' }}
-                      {%- endif -%}
-                    </div>
-                {%- endcase -%}
-              </div>
-            {%- endfor -%}
-          </div>
-        {%- endif -%}
-
-        <div
-          class="footer-block--newsletter{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}"
-          {% if settings.animations_reveal_on_scroll %}
-            data-cascade
-          {% endif %}
-        >
-          {%- if section.settings.newsletter_enable -%}
-            <div class="footer-block__newsletter">
-              {%- if section.settings.newsletter_heading != blank -%}
-                <h2 class="footer-block__heading inline-richtext">{{ section.settings.newsletter_heading }}</h2>
-              {%- endif -%}
-              {%- form 'customer', id: 'ContactFooter', class: 'footer__newsletter newsletter-form' -%}
-                <input type="hidden" name="contact[tags]" value="newsletter">
-                <div class="newsletter-form__field-wrapper">
-                  <div class="field">
-                    <input
-                      id="NewsletterForm--{{ section.id }}"
-                      type="email"
-                      name="contact[email]"
-                      class="field__input"
-                      value="{{ form.email }}"
-                      aria-required="true"
-                      autocorrect="off"
-                      autocapitalize="off"
-                      autocomplete="email"
-                      {% if form.errors %}
-                        autofocus
-                        aria-invalid="true"
-                        aria-describedby="ContactFooter-error"
-                      {% elsif form.posted_successfully? %}
-                        aria-describedby="ContactFooter-success"
-                      {% endif %}
-                      placeholder="{{ 'newsletter.label' | t }}"
-                      required
-                    >
-                    <label class="field__label" for="NewsletterForm--{{ section.id }}">
-                      {{ 'newsletter.label' | t }}
-                    </label>
-                    <button
-                      type="submit"
-                      class="newsletter-form__button field__button"
-                      name="commit"
-                      id="Subscribe"
-                      aria-label="{{ 'newsletter.button_label' | t }}"
-                    >
-                      <span class="svg-wrapper">
-                        {{- 'icon-arrow.svg' | inline_asset_content -}}
-                      </span>
-                    </button>
-                  </div>
-                  {%- if form.errors -%}
-                    <small class="newsletter-form__message form__message" id="ContactFooter-error">
-                      <span class="svg-wrapper">
-                        {{- 'icon-error.svg' | inline_asset_content -}}
-                      </span>
-                      {{- form.errors.translated_fields.email | capitalize }}
-                      {{ form.errors.messages.email -}}
-                    </small>
                   {%- endif -%}
-                </div>
-                {%- if form.posted_successfully? -%}
-                  <h3
-                    class="newsletter-form__message newsletter-form__message--success form__message"
-                    id="ContactFooter-success"
-                    tabindex="-1"
-                    autofocus
-                  >
-                    <span class="svg-wrapper">
-                      {{- 'icon-success.svg' | inline_asset_content -}}
-                    </span>
-                    {{- 'newsletter.success' | t }}
-                  </h3>
-                {%- endif -%}
-              {%- endform -%}
+
+                {%- when 'text' -%}
+                  {%- if block.settings.heading != blank -%}
+                    <h3 class="luxury-footer__col-title">{{ block.settings.heading | escape }}</h3>
+                  {%- endif -%}
+                  {%- if block.settings.subtext != blank -%}
+                    <div class="luxury-footer__text-content rte">
+                      {{ block.settings.subtext }}
+                    </div>
+                  {%- endif -%}
+
+                {%- when 'image' -%}
+                  {%- if block.settings.image != blank -%}
+                    <div class="luxury-footer__image-block" style="max-width: {{ block.settings.image_width }}px;">
+                      {{ block.settings.image | image_url: width: 600 | image_tag: loading: 'lazy', class: 'luxury-footer__block-img' }}
+                    </div>
+                  {%- endif -%}
+
+                {%- when 'brand_information' -%}
+                  {%- if settings.brand_headline != blank -%}
+                    <h3 class="luxury-footer__col-title">{{ settings.brand_headline | escape }}</h3>
+                  {%- endif -%}
+                  {%- if settings.brand_description != blank -%}
+                    <div class="luxury-footer__text-content rte">
+                      {{ settings.brand_description }}
+                    </div>
+                  {%- endif -%}
+
+              {%- endcase -%}
             </div>
-          {%- endif -%}
+          {%- endfor -%}
 
-          {%- if shop.features.follow_on_shop? and section.settings.enable_follow_on_shop -%}
-            <div class="footer__follow-on-shop">
-              {{ shop | login_button: action: 'follow' }}
-            </div>
-          {%- endif -%}
-
-          {%- if section.settings.show_social and has_social_icons -%}
-            {%- render 'social-icons', class: 'footer__list-social' -%}
-          {%- endif -%}
-        </div>
-      </div>
-    {%- endunless -%}
-  {%- endif -%}
-
-  <div
-    class="footer__content-bottom{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}"
-    {% if settings.animations_reveal_on_scroll %}
-      data-cascade
-    {% endif %}
-  >
-    <div class="footer__content-bottom-wrapper page-width">
-      <div class="footer__column footer__localization isolate">
-        {%- if section.settings.enable_country_selector and localization.available_countries.size > 1 -%}
-          <localization-form>
-            {%- form 'localization', id: 'FooterCountryForm', class: 'localization-form' -%}
-              <div>
-                <h2 class="caption-large text-body" id="FooterCountryLabel">{{ 'localization.country_label' | t }}</h2>
-                {%- render 'country-localization', localPosition: 'FooterCountry' -%}
-              </div>
-            {%- endform -%}
-          </localization-form>
-        {%- endif -%}
-
-        {%- if section.settings.enable_language_selector and localization.available_languages.size > 1 -%}
-          <localization-form>
-            {%- form 'localization', id: 'FooterLanguageForm', class: 'localization-form' -%}
-              <div>
-                <h2 class="caption-large text-body" id="FooterLanguageLabel">
-                  {{ 'localization.language_label' | t }}
-                </h2>
-                {%- render 'language-localization', localPosition: 'FooterLanguage' -%}
-              </div>
-            {%- endform -%}
-          </localization-form>
-        {%- endif -%}
-      </div>
-      <div class="footer__column footer__column--info">
-        {%- if section.settings.payment_enable -%}
-          <div class="footer__payment">
-            <span class="visually-hidden">{{ 'sections.footer.payment' | t }}</span>
-            <ul class="list list-payment" role="list">
-              {%- for type in shop.enabled_payment_types -%}
-                <li class="list-payment__item">
-                  {{ type | payment_type_svg_tag: class: 'icon icon--full-color' }}
+        {%- elsif footer_menu != blank and footer_menu.links.size > 0 -%}
+          {%- comment -%} Case 3: Flat single menu fallback {%- endcomment -%}
+          <div class="luxury-footer__col">
+            <h3 class="luxury-footer__col-title">{{ footer_menu.title | default: 'Quick links' }}</h3>
+            <ul class="luxury-footer__links">
+              {%- for link in footer_menu.links -%}
+                <li>
+                  <a href="{{ link.url }}" class="luxury-footer__link">
+                    {{ link.title | escape }}
+                  </a>
                 </li>
               {%- endfor -%}
             </ul>
           </div>
         {%- endif -%}
       </div>
+
+      {%- comment -%} Newsletter Column {%- endcomment -%}
+      {%- if section.settings.newsletter_enable -%}
+        <div class="luxury-footer__newsletter-col">
+          {%- if section.settings.newsletter_eyebrow != blank -%}
+            <h3 class="luxury-footer__col-title">{{ section.settings.newsletter_eyebrow }}</h3>
+          {%- endif -%}
+          {%- if section.settings.newsletter_heading != blank -%}
+            <h4 class="luxury-footer__newsletter-heading">{{ section.settings.newsletter_heading }}</h4>
+          {%- endif -%}
+          
+          {%- form 'customer', id: 'LuxuryFooterNewsletter', class: 'luxury-footer__form' -%}
+            <input type="hidden" name="contact[tags]" value="newsletter">
+            <div class="luxury-footer__input-wrap">
+              <input
+                type="email"
+                name="contact[email]"
+                id="LuxuryFooterEmail-{{ section.id }}"
+                class="luxury-footer__input"
+                value="{{ form.email }}"
+                placeholder="{{ section.settings.newsletter_placeholder | default: 'Email address' }}"
+                required
+                autocomplete="email"
+                autocorrect="off"
+                autocapitalize="off"
+                aria-label="Email address"
+              >
+              <button type="submit" class="luxury-footer__submit-btn" aria-label="Subscribe to newsletter">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                  <polyline points="12 5 19 12 12 19"></polyline>
+                </svg>
+              </button>
+            </div>
+
+            {%- if form.posted_successfully? -%}
+              <p class="luxury-footer__form-message luxury-footer__form-message--success">
+                {{ 'newsletter.success' | t | default: 'Thank you for subscribing.' }}
+              </p>
+            {%- elsif form.errors -%}
+              <p class="luxury-footer__form-message luxury-footer__form-message--error">
+                {{ form.errors.translated_fields.email | capitalize }} {{ form.errors.messages.email }}
+              </p>
+            {%- endif -%}
+          {%- endform -%}
+
+          {%- comment -%} Social Media Icons {%- endcomment -%}
+          {%- if section.settings.show_social -%}
+            <div class="luxury-footer__social-links">
+              <a href="{{ settings.social_instagram_link | default: '#' }}" class="luxury-footer__social-link" aria-label="Instagram" target="_blank" rel="noopener">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                  <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                  <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                </svg>
+              </a>
+              <a href="{{ settings.social_tiktok_link | default: settings.social_pinterest_link | default: '#' }}" class="luxury-footer__social-link" aria-label="Social media" target="_blank" rel="noopener">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"></path>
+                </svg>
+              </a>
+            </div>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
     </div>
-    <div class="footer__content-bottom-wrapper page-width{% if section.settings.enable_country_selector == false and section.settings.enable_language_selector == false %} footer__content-bottom-wrapper--center{% endif %}">
-      <div class="footer__copyright caption">
-        <small class="copyright__content"
-          >&copy; {{ 'now' | date: '%Y' }}, {{ shop.name | link_to: routes.root_url -}}
-        </small>
-        <small class="copyright__content">{{ powered_by_link }}</small>
-        {%- if section.settings.show_policy -%}
-          <ul class="policies list-unstyled">
-            {%- for policy in shop.policies -%}
-              {%- if policy != blank -%}
-                <li>
-                  <small class="copyright__content"
-                    ><a href="{{ policy.url }}">{{ policy.title | escape }}</a></small
-                  >
-                </li>
-              {%- endif -%}
-            {%- endfor -%}
-          </ul>
-        {%- endif -%}
+
+    {%- comment -%} 2. Thin Hairline Middle Divider {%- endcomment -%}
+    <div class="luxury-footer__divider"></div>
+
+    {%- comment -%} 3. Monumental Brand Display: Letters (CARATOVA) - Full Width {%- endcomment -%}
+    {%- if section.settings.show_wordmark -%}
+      <div class="luxury-footer__brand-display">
+        <div class="luxury-footer__brand-letters" aria-label="{{ section.settings.wordmark_text | default: 'CARATOVA' }}">
+          {%- assign brand_chars = section.settings.wordmark_text | default: 'CARATOVA' | split: '' -%}
+          {%- for char in brand_chars -%}
+            <span class="luxury-footer__letter">{{ char }}</span>
+          {%- endfor -%}
+        </div>
+      </div>
+    {%- endif -%}
+
+    {%- comment -%} 4. Bottom Row: Copyright Only (Terms/Privacy/Returns removed) {%- endcomment -%}
+    <div class="luxury-footer__bottom">
+      <div class="luxury-footer__copyright">
+        <span>&copy; {{ 'now' | date: '%Y' }} {{ section.settings.copyright_text | default: 'Caratova. All rights reserved.' }}</span>
       </div>
     </div>
+
   </div>
 </footer>
 
 {% schema %}
 {
-  "name": "t:sections.footer.name",
-  "blocks": [
+  "name": "Luxury Footer",
+  "tag": "footer",
+  "class": "section-footer",
+  "settings": [
     {
-      "type": "@app"
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "header",
+      "content": "Navigation Menu"
     },
     {
       "type": "link_list",
-      "name": "t:sections.footer.blocks.link_list.name",
+      "id": "menu",
+      "default": "footer",
+      "label": "Menu",
+      "info": "Displays main options as headings and their inner options as links under each heading."
+    },
+    {
+      "type": "header",
+      "content": "Newsletter"
+    },
+    {
+      "type": "checkbox",
+      "id": "newsletter_enable",
+      "label": "Show Newsletter Column",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "newsletter_eyebrow",
+      "label": "Newsletter Eyebrow",
+      "default": "NEWSLETTER"
+    },
+    {
+      "type": "text",
+      "id": "newsletter_heading",
+      "label": "Newsletter Heading",
+      "default": "Quiet updates, occasionally."
+    },
+    {
+      "type": "text",
+      "id": "newsletter_placeholder",
+      "label": "Input Placeholder",
+      "default": "Email address"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_social",
+      "label": "Show Social Icons",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Monumental Brand Display"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_wordmark",
+      "label": "Show Brand Display",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "wordmark_text",
+      "label": "Brand Display Wordmark",
+      "default": "CARATOVA"
+    },
+    {
+      "type": "header",
+      "content": "Copyright"
+    },
+    {
+      "type": "text",
+      "id": "copyright_text",
+      "label": "Copyright Text",
+      "default": "Caratova. All rights reserved."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "link_list",
+      "name": "Menu Column",
       "settings": [
         {
-          "type": "inline_richtext",
+          "type": "text",
           "id": "heading",
-          "default": "t:sections.footer.blocks.link_list.settings.heading.default",
-          "label": "t:sections.footer.blocks.link_list.settings.heading.label"
+          "label": "Column Title",
+          "default": "Quick links"
         },
         {
           "type": "link_list",
           "id": "menu",
           "default": "footer",
-          "label": "t:sections.footer.blocks.link_list.settings.menu.label"
-        }
-      ]
-    },
-    {
-      "type": "brand_information",
-      "name": "t:sections.footer.blocks.brand_information.name",
-      "settings": [
-        {
-          "type": "paragraph",
-          "content": "t:sections.footer.blocks.brand_information.settings.paragraph.content"
-        },
-        {
-          "type": "checkbox",
-          "id": "show_social",
-          "default": true,
-          "label": "t:sections.footer.blocks.brand_information.settings.show_social.label",
-          "info": "t:sections.footer.blocks.brand_information.settings.show_social.info"
+          "label": "Select Menu",
+          "info": "Select any menu created in Online Store -> Navigation"
         }
       ]
     },
     {
       "type": "text",
-      "name": "t:sections.footer.blocks.text.name",
+      "name": "Text Column",
       "settings": [
         {
-          "type": "inline_richtext",
+          "type": "text",
           "id": "heading",
-          "default": "t:sections.footer.blocks.text.settings.heading.default",
-          "label": "t:sections.footer.blocks.text.settings.heading.label"
+          "label": "Heading",
+          "default": "OUR ATELIER"
         },
         {
           "type": "richtext",
           "id": "subtext",
-          "default": "t:sections.footer.blocks.text.settings.subtext.default",
-          "label": "t:sections.footer.blocks.text.settings.subtext.label"
+          "label": "Text",
+          "default": "<p>Handcrafted fine jewelry designed to be worn every day and kept for life.</p>"
         }
       ]
     },
@@ -394,152 +398,29 @@
           "type": "range",
           "id": "image_width",
           "min": 50,
-          "max": 550,
-          "step": 5,
+          "max": 400,
+          "step": 10,
           "unit": "px",
-          "label": "Width",
-          "default": 100
-        },
+          "label": "Image width",
+          "default": 150
+        }
+      ]
+    },
+    {
+      "type": "brand_information",
+      "name": "Brand Information",
+      "settings": [
         {
-          "type": "select",
-          "id": "alignment",
-          "label": "Alignment",
-          "options": [
-            {
-              "value": "",
-              "label": "Left"
-            },
-            {
-              "value": "center",
-              "label": "Center"
-            },
-            {
-              "value": "right",
-              "label": "Right"
-            }
-          ],
-          "default": "center"
+          "type": "paragraph",
+          "content": "Displays brand headline and description configured in Theme Settings."
         }
       ]
     }
   ],
-  "settings": [
+  "presets": [
     {
-      "type": "color_scheme",
-      "id": "color_scheme",
-      "label": "t:sections.all.colors.label",
-      "default": "scheme-1"
-    },
-    {
-      "type": "header",
-      "content": "t:sections.footer.settings.header__1.content",
-      "info": "t:sections.footer.settings.header__1.info"
-    },
-    {
-      "type": "checkbox",
-      "id": "newsletter_enable",
-      "default": true,
-      "label": "t:sections.footer.settings.newsletter_enable.label"
-    },
-    {
-      "type": "inline_richtext",
-      "id": "newsletter_heading",
-      "default": "t:sections.footer.settings.newsletter_heading.default",
-      "label": "t:sections.footer.settings.newsletter_heading.label"
-    },
-    {
-      "type": "header",
-      "content": "t:sections.footer.settings.header__9.content"
-    },
-    {
-      "type": "checkbox",
-      "id": "enable_follow_on_shop",
-      "default": true,
-      "label": "t:sections.footer.settings.enable_follow_on_shop.label",
-      "info": "t:sections.footer.settings.enable_follow_on_shop.info"
-    },
-    {
-      "type": "checkbox",
-      "id": "show_social",
-      "default": true,
-      "label": "t:sections.footer.settings.show_social.label",
-      "info": "t:sections.footer.settings.show_social.info"
-    },
-    {
-      "type": "checkbox",
-      "id": "enable_country_selector",
-      "default": true,
-      "label": "t:sections.footer.settings.enable_country_selector.label",
-      "info": "t:sections.footer.settings.enable_country_selector.info"
-    },
-    {
-      "type": "checkbox",
-      "id": "enable_language_selector",
-      "default": true,
-      "label": "t:sections.footer.settings.enable_language_selector.label",
-      "info": "t:sections.footer.settings.enable_language_selector.info"
-    },
-    {
-      "type": "checkbox",
-      "id": "payment_enable",
-      "default": true,
-      "label": "t:sections.footer.settings.payment_enable.label"
-    },
-    {
-      "type": "checkbox",
-      "id": "show_policy",
-      "default": true,
-      "label": "t:sections.footer.settings.show_policy.label",
-      "info": "t:sections.footer.settings.show_policy.info"
-    },
-    {
-      "type": "header",
-      "content": "t:sections.all.spacing"
-    },
-    {
-      "type": "range",
-      "id": "margin_top",
-      "min": 0,
-      "max": 100,
-      "step": 4,
-      "unit": "px",
-      "label": "t:sections.footer.settings.margin_top.label",
-      "default": 0
-    },
-    {
-      "type": "header",
-      "content": "t:sections.all.padding.section_padding_heading"
-    },
-    {
-      "type": "range",
-      "id": "padding_top",
-      "min": 0,
-      "max": 100,
-      "step": 4,
-      "unit": "px",
-      "label": "t:sections.all.padding.padding_top",
-      "default": 36
-    },
-    {
-      "type": "range",
-      "id": "padding_bottom",
-      "min": 0,
-      "max": 100,
-      "step": 4,
-      "unit": "px",
-      "label": "t:sections.all.padding.padding_bottom",
-      "default": 36
+      "name": "Luxury Footer"
     }
-  ],
-  "default": {
-    "blocks": [
-      {
-        "type": "link_list"
-      },
-      {
-        "type": "text"
-      }
-    ]
-  }
+  ]
 }
 {% endschema %}

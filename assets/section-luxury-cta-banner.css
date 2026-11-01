@@ -1,0 +1,309 @@
+/* ==========================================================================
+   Luxury CTA Banner Section (Aurelle / Caratova)
+   ========================================================================== */
+
+.luxury-cta-section {
+  position: relative;
+  width: 100%;
+  min-height: clamp(620px, 56.25vw, 850px);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #F7F3EB;
+  background-size: cover;
+  background-position: center top;
+  background-repeat: no-repeat;
+  padding: 6rem 2rem 8rem;
+  box-sizing: border-box;
+  margin-bottom: -3px !important;
+  z-index: 2;
+}
+
+.content-for-layout > .shopify-section:last-child:has(.luxury-cta-section),
+.content-for-layout:has(.luxury-cta-section) {
+  margin-bottom: -3px !important;
+  background-color: #F7F3EB;
+}
+
+@media screen and (max-width: 749px) {
+  .luxury-cta-section {
+    min-height: 520px;
+    padding: 5rem 1.6rem 6rem;
+    background-position: center center;
+  }
+}
+
+/* Background Image: Keeps full image visible without cropping */
+.luxury-cta__bg-img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  z-index: 0;
+  pointer-events: none;
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    #000000 0%,
+    #000000 65%,
+    rgba(0, 0, 0, 0.94) 73%,
+    rgba(0, 0, 0, 0.78) 80%,
+    rgba(0, 0, 0, 0.50) 86%,
+    rgba(0, 0, 0, 0.22) 92%,
+    rgba(0, 0, 0, 0) 97%,
+    rgba(0, 0, 0, 0) 100%
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    #000000 0%,
+    #000000 65%,
+    rgba(0, 0, 0, 0.94) 73%,
+    rgba(0, 0, 0, 0.78) 80%,
+    rgba(0, 0, 0, 0.50) 86%,
+    rgba(0, 0, 0, 0.22) 92%,
+    rgba(0, 0, 0, 0) 97%,
+    rgba(0, 0, 0, 0) 100%
+  );
+}
+
+/* Dark Ambiance Overlay for Text Contrast */
+.luxury-cta__ambient-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #000000;
+  z-index: 1;
+  pointer-events: none;
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    #000000 0%,
+    #000000 65%,
+    rgba(0, 0, 0, 0.94) 73%,
+    rgba(0, 0, 0, 0.78) 80%,
+    rgba(0, 0, 0, 0.50) 86%,
+    rgba(0, 0, 0, 0.22) 92%,
+    rgba(0, 0, 0, 0) 97%,
+    rgba(0, 0, 0, 0) 100%
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    #000000 0%,
+    #000000 65%,
+    rgba(0, 0, 0, 0.94) 73%,
+    rgba(0, 0, 0, 0.78) 80%,
+    rgba(0, 0, 0, 0.50) 86%,
+    rgba(0, 0, 0, 0.22) 92%,
+    rgba(0, 0, 0, 0) 97%,
+    rgba(0, 0, 0, 0) 100%
+  );
+}
+
+/* Bottom Shade of Footer Background Color (#F7F3EB) - Seamless merger with NO lines */
+.luxury-cta__footer-connector {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 280px;
+  background: linear-gradient(
+    to bottom,
+    rgba(247, 243, 235, 0) 0%,
+    rgba(247, 243, 235, 0.04) 15%,
+    rgba(247, 243, 235, 0.16) 32%,
+    rgba(247, 243, 235, 0.38) 50%,
+    rgba(247, 243, 235, 0.68) 68%,
+    rgba(247, 243, 235, 0.88) 82%,
+    rgba(247, 243, 235, 0.97) 90%,
+    #F7F3EB 94%,
+    #F7F3EB 100%
+  );
+  pointer-events: none;
+  z-index: 2;
+}
+
+@media screen and (max-width: 749px) {
+  .luxury-cta__footer-connector {
+    height: 180px;
+  }
+}
+
+/* Content */
+.luxury-cta__content {
+  position: relative;
+  z-index: 3;
+  width: 100%;
+  max-width: 780px;
+  margin: 0 auto;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Heading: Cormorant Garamond, White, Elegant */
+.luxury-cta__heading {
+  font-family: var(--font-heading-family), "Cormorant Garamond", Georgia, serif;
+  font-size: clamp(3.2rem, 4.4vw, 5.2rem);
+  font-weight: 400;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  color: #FFFFFF;
+  margin: 0 0 2rem 0;
+  text-shadow: 0 2px 18px rgba(0, 0, 0, 0.45);
+  max-width: 660px;
+}
+
+@media screen and (max-width: 749px) {
+  .luxury-cta__heading {
+    font-size: clamp(2.6rem, 7.5vw, 3.4rem);
+    margin-bottom: 1.8rem;
+  }
+}
+
+/* Subtext */
+.luxury-cta__subtext {
+  font-family: var(--font-body-family);
+  font-size: 1.35rem;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.88);
+  letter-spacing: 0.01em;
+  max-width: 580px;
+  margin: 0 auto 3.2rem auto;
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.45);
+}
+
+@media screen and (max-width: 749px) {
+  .luxury-cta__subtext {
+    font-size: 1.25rem;
+    line-height: 1.5;
+    margin-bottom: 2.6rem;
+  }
+}
+
+/* Contact Us Button */
+.luxury-cta__btn-wrap {
+  display: inline-flex;
+  justify-content: center;
+}
+
+.luxury-cta__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem 4rem;
+  background: #FFFFFF;
+  color: #1C1A16;
+  border: 1px solid #FFFFFF;
+  font-family: var(--font-body-family);
+  font-size: 1.15rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  text-decoration: none;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.luxury-cta__btn:hover {
+  background: transparent;
+  color: #FFFFFF;
+  border-color: #FFFFFF;
+}
+
+/* ==========================================================================
+   Email Subscription Form (Exact match to uploaded design)
+   ========================================================================== */
+.luxury-cta__form-wrap {
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto 2.2rem auto;
+}
+
+.luxury-cta__form {
+  display: flex;
+  align-items: stretch;
+  width: 100%;
+  gap: 0;
+}
+
+@media screen and (max-width: 520px) {
+  .luxury-cta__form {
+    flex-direction: column;
+    gap: 1.2rem;
+  }
+}
+
+.luxury-cta__input {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.38);
+  border-right: none;
+  color: #FFFFFF;
+  padding: 1.4rem 2rem;
+  font-family: var(--font-body-family);
+  font-size: 1.35rem;
+  outline: none;
+  border-radius: 0;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+}
+
+@media screen and (max-width: 520px) {
+  .luxury-cta__input {
+    border-right: 1px solid rgba(255, 255, 255, 0.38);
+  }
+}
+
+.luxury-cta__input::placeholder {
+  color: rgba(255, 255, 255, 0.68);
+  font-family: var(--font-body-family);
+  font-size: 1.3rem;
+}
+
+.luxury-cta__input:focus {
+  border-color: #FFFFFF;
+  background: rgba(255, 255, 255, 0.22);
+}
+
+.luxury-cta__submit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.4rem 3rem;
+  background: #FFFFFF;
+  color: #1C1A16;
+  border: 1px solid #FFFFFF;
+  border-radius: 0;
+  font-family: var(--font-body-family);
+  font-size: 1.15rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.3s ease;
+}
+
+.luxury-cta__submit:hover {
+  background: #EDE8DD;
+  border-color: #EDE8DD;
+  color: #1C1A16;
+}
+
+.luxury-cta__message {
+  font-family: var(--font-body-family);
+  font-size: 1.25rem;
+  color: #FFFFFF;
+  margin-top: 1rem;
+}
+

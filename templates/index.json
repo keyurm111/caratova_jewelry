@@ -7,85 +7,171 @@
         "metaobject_handle": "hero_slide",
         "auto_rotate": true,
         "change_slides_speed": 5,
-        "image_overlay_opacity": 10,
-        "desktop_content_position": "middle-center",
+        "image_overlay_opacity": 15,
+        "desktop_content_position": "bottom-left",
         "heading_size": "h1",
         "show_text_box": false,
         "color_scheme": "scheme-1"
       }
     },
-    "image_banner": {
-      "type": "image-banner",
-      "disabled": true,
+    "shop_by_category": {
+      "type": "shop-by-category",
+      "settings": {
+        "title": "SHOP BY CATEGORY",
+        "collections_to_show": 4,
+        "columns_desktop": 4,
+        "color_scheme": "scheme-1"
+      }
+    },
+    "product_highlight": {
+      "type": "featured-product-highlight",
+      "settings": {
+        "source": "metaobject",
+        "metaobject_handle": "product_highlight",
+        "image_position": "left",
+        "auto_rotate": true,
+        "change_slides_speed": 2,
+        "content_background": "#EFE8DC",
+        "color_scheme": "scheme-1"
+      }
+    },
+    "new_arrivals": {
+      "type": "new-arrivals-marquee",
+      "settings": {
+        "eyebrow": "NEW ARRIVALS",
+        "heading": "New this season",
+        "products_to_show": 8,
+        "columns_desktop": 4,
+        "view_all_label": "VIEW ALL NEW",
+        "view_all_link": "shopify://collections/all",
+        "color_scheme": "scheme-1"
+      }
+    },
+    "trending_articles": {
+      "type": "trending-articles",
+      "settings": {
+        "eyebrow": "TRENDING ARTICLES",
+        "heading": "Most loved pieces",
+        "products_to_show": 10,
+        "columns_desktop": 4,
+        "show_ranking": false,
+        "view_all_label": "VIEW ALL TRENDING",
+        "view_all_link": "shopify://collections/all",
+        "color_scheme": "scheme-1"
+      }
+    },
+    "brand_story": {
+      "type": "brand-story",
+      "settings": {
+        "eyebrow": "OUR CRAFT",
+        "heading": "Patience, set in gold",
+        "description": "<p>Every Aurelle piece is cast, set, and finished by hand in a single atelier. We make fewer things, more carefully - and repair them for life.</p>",
+        "button_label": "DISCOVER OUR CRAFT",
+        "button_link": "shopify://collections/all",
+        "layout": "text_first",
+        "content_background": "#EFE8DC",
+        "color_scheme": "scheme-1"
+      }
+    },
+    "spiral_3d": {
+      "type": "spiral-3d",
       "blocks": {
-        "heading": {
-          "type": "heading",
+        "card_1": {
+          "type": "card",
           "settings": {
-            "heading": "Browse our latest products",
-            "heading_size": "h0"
+            "number": "01",
+            "title": "Onyx & Gold",
+            "price_or_label": "$680"
           }
         },
-        "button": {
-          "type": "buttons",
+        "card_2": {
+          "type": "card",
           "settings": {
-            "button_label_1": "Shop all",
-            "button_link_1": "shopify://collections/all",
-            "button_style_secondary_1": true,
-            "button_label_2": "",
-            "button_link_2": "",
-            "button_style_secondary_2": false
+            "number": "02",
+            "title": "Diamond Solitaires",
+            "price_or_label": "$1,250"
+          }
+        },
+        "card_3": {
+          "type": "card",
+          "settings": {
+            "number": "03",
+            "title": "Sculpted Bangles",
+            "price_or_label": "$540"
+          }
+        },
+        "card_4": {
+          "type": "card",
+          "settings": {
+            "number": "04",
+            "title": "Hammered Earrings",
+            "price_or_label": "$420"
+          }
+        },
+        "card_5": {
+          "type": "card",
+          "settings": {
+            "number": "05",
+            "title": "Solar Medallions",
+            "price_or_label": "$590"
+          }
+        },
+        "card_6": {
+          "type": "card",
+          "settings": {
+            "number": "06",
+            "title": "Azure Florals",
+            "price_or_label": "$740"
           }
         }
       },
       "block_order": [
-        "heading",
-        "button"
+        "card_1",
+        "card_2",
+        "card_3",
+        "card_4",
+        "card_5",
+        "card_6"
       ],
       "settings": {
-        "image_overlay_opacity": 40,
-        "image_height": "large",
-        "desktop_content_position": "bottom-center",
-        "show_text_box": false,
-        "image_behavior": "none",
-        "desktop_content_alignment": "center",
-        "color_scheme": "scheme-3",
-        "mobile_content_alignment": "center",
-        "stack_images_on_mobile": false,
-        "show_text_below": false
+        "heading": "Discover Our Curated Collection of Timeless Jewelry, Crafted to Make Every Moment Special.",
+        "subheading": "",
+        "scroll_height": 600,
+        "card_width": 380,
+        "spiral_radius": 550,
+        "step_angle": 50,
+        "pitch": 160,
+        "camera_tilt": -4,
+        "background_color": "#F7F3EB",
+        "text_color": "#1C1A16",
+        "card_background": "#EFE8DC",
+        "show_price": true,
+        "padding_top": 80,
+        "padding_bottom": 0,
+        "card_ratio": "5/4"
       }
     },
-    "featured_collection": {
-      "type": "featured-collection",
+    "featured_blog": {
+      "type": "featured-editorial-blog",
       "settings": {
-        "title": "Featured products",
-        "heading_size": "h2",
-        "description": "",
-        "show_description": false,
-        "description_style": "body",
-        "collection": "all",
-        "products_to_show": 8,
-        "columns_desktop": 4,
+        "blog": "news",
+        "eyebrow": "THE JOURNAL",
+        "heading": "Stories from the Atelier",
+        "view_all_label": "VIEW ALL STORIES",
         "color_scheme": "scheme-1",
-        "full_width": false,
-        "show_view_all": true,
-        "view_all_style": "solid",
-        "enable_desktop_slider": false,
-        "swipe_on_mobile": false,
-        "image_ratio": "adapt",
-        "image_shape": "default",
-        "show_secondary_image": true,
-        "show_vendor": false,
-        "show_rating": false,
-        "quick_add": "none",
-        "columns_mobile": "2",
-        "padding_top": 44,
-        "padding_bottom": 36
+        "padding_top": 0,
+        "padding_bottom": 80
       }
     }
   },
   "order": [
     "hero_slider",
-    "image_banner",
-    "featured_collection"
+    "shop_by_category",
+    "product_highlight",
+    "new_arrivals",
+    "trending_articles",
+    "brand_story",
+    "spiral_3d",
+    "featured_blog"
   ]
 }

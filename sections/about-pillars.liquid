@@ -1,0 +1,217 @@
+{{ 'section-about-page.css' | asset_url | stylesheet_tag }}
+
+{%- style -%}
+  #AboutPillars-{{ section.id }} {
+    background-color: {{ section.settings.background_color | default: '#1C1A16' }};
+    padding-top: {{ section.settings.padding_top }}px;
+    padding-bottom: {{ section.settings.padding_bottom }}px;
+  }
+
+  @media screen and (max-width: 749px) {
+    #AboutPillars-{{ section.id }} {
+      padding-top: {{ section.settings.padding_top | times: 0.65 | round }}px;
+      padding-bottom: {{ section.settings.padding_bottom | times: 0.65 | round }}px;
+    }
+  }
+{%- endstyle -%}
+
+<section
+  class="about-pillars-section"
+  id="AboutPillars-{{ section.id }}"
+  aria-label="{{ section.settings.heading | escape }}"
+>
+  <div class="page-width">
+    
+    <div class="about-pillars__header">
+      {%- if section.settings.eyebrow != blank -%}
+        <span class="about-pillars__eyebrow">{{ section.settings.eyebrow }}</span>
+      {%- endif -%}
+
+      {%- if section.settings.heading != blank -%}
+        <h2 class="about-pillars__heading">
+          {{ section.settings.heading }}
+        </h2>
+      {%- endif -%}
+
+      {%- if section.settings.subtext != blank -%}
+        <p class="about-pillars__subtext">
+          {{ section.settings.subtext }}
+        </p>
+      {%- endif -%}
+    </div>
+
+    <div class="about-pillars__grid">
+      {%- for block in section.blocks -%}
+        <div class="about-pillars__card" {{ block.shopify_attributes }}>
+          <div>
+            <div class="about-pillars__card-top">
+              <span class="about-pillars__card-num">{{ block.settings.number }}</span>
+              <span class="about-pillars__card-icon" aria-hidden="true"></span>
+            </div>
+            
+            <div class="about-pillars__card-body">
+              {%- if block.settings.title != blank -%}
+                <h3 class="about-pillars__card-title">
+                  {{ block.settings.title }}
+                </h3>
+              {%- endif -%}
+
+              {%- if block.settings.text != blank -%}
+                <p class="about-pillars__card-text">
+                  {{ block.settings.text }}
+                </p>
+              {%- endif -%}
+            </div>
+          </div>
+
+          {%- if block.settings.link_label != blank -%}
+            <a href="{{ block.settings.link_url | default: '#' }}" class="about-pillars__card-link">
+              <span>{{ block.settings.link_label }}</span>
+              <span aria-hidden="true">&rarr;</span>
+            </a>
+          {%- endif -%}
+        </div>
+      {%- endfor -%}
+    </div>
+
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "About Four Pillars",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background Color",
+      "default": "#1C1A16"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow Text",
+      "default": "THE FOUNDATIONS"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Our Four Pillars of Quiet Luxury"
+    },
+    {
+      "type": "textarea",
+      "id": "subtext",
+      "label": "Subheading",
+      "default": "The enduring principles guiding every creation that leaves our atelier."
+    },
+    {
+      "type": "header",
+      "content": "Section Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 40,
+      "max": 180,
+      "step": 10,
+      "unit": "px",
+      "label": "Padding Top",
+      "default": 110
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 40,
+      "max": 180,
+      "step": 10,
+      "unit": "px",
+      "label": "Padding Bottom",
+      "default": 110
+    }
+  ],
+  "blocks": [
+    {
+      "type": "pillar",
+      "name": "Pillar Card",
+      "settings": [
+        {
+          "type": "text",
+          "id": "number",
+          "label": "Pillar Number",
+          "default": "01"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Flawless Provenance"
+        },
+        {
+          "type": "textarea",
+          "id": "text",
+          "label": "Description",
+          "default": "Every stone is ethically sourced from certified artisanal mines, traced from deep earth to finished piece with uncompromising transparency."
+        },
+        {
+          "type": "text",
+          "id": "link_label",
+          "label": "Link Label",
+          "default": "READ OUR SOURCING"
+        },
+        {
+          "type": "url",
+          "id": "link_url",
+          "label": "Link URL"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "About Four Pillars",
+      "blocks": [
+        {
+          "type": "pillar",
+          "settings": {
+            "number": "01",
+            "title": "Flawless Provenance",
+            "text": "Every stone is ethically sourced from certified artisanal mines, traced from deep earth to finished piece with uncompromising transparency.",
+            "link_label": "READ OUR SOURCING"
+          }
+        },
+        {
+          "type": "pillar",
+          "settings": {
+            "number": "02",
+            "title": "Atelier Artistry",
+            "text": "Master goldsmiths sculpt and set each contour by hand, honoring timeless bench techniques that transcend mechanized shortcuts.",
+            "link_label": "DISCOVER TECHNIQUES"
+          }
+        },
+        {
+          "type": "pillar",
+          "settings": {
+            "number": "03",
+            "title": "Singular Vision",
+            "text": "Sculptural forms marrying classical proportions with contemporary organic minimalism, designed to accompany you through every chapter.",
+            "link_label": "EXPLORE DESIGN"
+          }
+        },
+        {
+          "type": "pillar",
+          "settings": {
+            "number": "04",
+            "title": "Guaranteed For Life",
+            "text": "Every Caratova creation comes with an eternal commitment to complimentary ultrasonic care, polishing, and bespoke restoration.",
+            "link_label": "LIFETIME PROMISE"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
+
