@@ -1,0 +1,985 @@
+{%- style -%}
+  #Spiral3D-{{ section.id }} {
+    --spiral-bg: {{ section.settings.background_color | default: '#F7F3EB' }};
+    --spiral-text: {{ section.settings.text_color | default: '#1C1A16' }};
+    --spiral-card-bg: {{ section.settings.card_background | default: '#EFE8DC' }};
+    --spiral-scroll-h: {{ section.settings.scroll_height | default: 600 }}vh;
+    --card-width: {{ section.settings.card_width | default: 380 }}px;
+    background-color: var(--spiral-bg);
+    color: var(--spiral-text);
+    padding-top: 0;
+    padding-bottom: {{ section.settings.padding_bottom | default: 0 }}px;
+    margin-bottom: 0;
+  }
+
+  @media screen and (max-width: 749px) {
+    #Spiral3D-{{ section.id }} {
+      padding-top: 0;
+      padding-bottom: {{ section.settings.padding_bottom | times: 0.625 | round: 0 | default: 0 }}px;
+      margin-bottom: 0;
+    }
+  }
+
+  .spiral-3d-section {
+    position: relative;
+    width: 100%;
+    height: var(--spiral-scroll-h, 600vh);
+    box-sizing: border-box;
+    margin-bottom: 0;
+  }
+
+  .spiral-stage {
+    position: sticky;
+    top: 0;
+    width: 100%;
+    height: 100vh;
+    height: 100svh;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    perspective: 1200px;
+    perspective-origin: 50% 50%;
+    box-sizing: border-box;
+    padding: 0 1.5rem;
+  }
+
+  @media screen and (max-width: 749px) {
+    .spiral-stage {
+      padding: 0 1rem;
+    }
+  }
+
+  /* Centered Header positioned near the top that recedes backward into 3D space on scroll */
+  .spiral-header {
+    position: absolute;
+    top: {{ section.settings.padding_top | default: 80 }}px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    max-width: 920px;
+    text-align: center;
+    z-index: 1;
+    pointer-events: none;
+    transform-origin: center top;
+    will-change: transform, opacity;
+  }
+
+  @media screen and (max-width: 749px) {
+    .spiral-header {
+      top: {{ section.settings.padding_top | times: 0.625 | round: 0 | default: 50 }}px;
+    }
+  }
+
+  .spiral-subheading {
+    display: block;
+    font-family: var(--font-body-family);
+    font-size: 1.15rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--spiral-text, #1C1A16);
+    opacity: 0.65;
+    margin-bottom: 1.4rem;
+    font-weight: 500;
+  }
+
+  .spiral-heading {
+    margin: 0;
+    font-family: var(--font-heading-family), "Cormorant Garamond", Georgia, serif;
+    font-size: clamp(2.4rem, 4vw, 4.8rem);
+    font-weight: 400;
+    line-height: 1.16;
+    letter-spacing: -0.015em;
+    color: var(--spiral-text, #1C1A16);
+  }
+
+  @media screen and (max-width: 768px) {
+    .spiral-heading {
+      font-size: clamp(1.9rem, 6.5vw, 2.8rem);
+      line-height: 1.22;
+      padding: 0 1rem;
+    }
+    .spiral-subheading {
+      font-size: 0.95rem;
+      letter-spacing: 0.18em;
+      margin-bottom: 0.8rem;
+    }
+  }
+
+  .spiral-viewport {
+    position: absolute;
+    top: 58%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    transform-style: preserve-3d;
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  @media screen and (max-width: 749px) {
+    .spiral-viewport {
+      top: 60%;
+    }
+  }
+
+  .spiral-helix {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 0;
+    transform-style: preserve-3d;
+    will-change: transform;
+  }
+
+  .spiral-card {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: var(--card-width, 380px);
+    aspect-ratio: {{ section.settings.card_ratio | default: '5/4' }};
+    transform-style: preserve-3d;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    cursor: pointer;
+    outline: none;
+    border-radius: 6px;
+    box-shadow: 0 20px 45px rgba(28, 26, 22, 0.16), 0 6px 16px rgba(28, 26, 22, 0.08);
+    transition: opacity 0.1s ease-out;
+    pointer-events: auto;
+    user-select: none;
+  }
+
+  .spiral-card:focus-visible {
+    outline: 2px solid var(--spiral-text, #1C1A16);
+    outline-offset: 4px;
+  }
+
+  .spiral-card__inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    border-radius: 6px;
+    overflow: hidden;
+    background-color: var(--spiral-card-bg, #EFE8DC);
+  }
+
+  .spiral-card__media {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  .spiral-card__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .spiral-card:hover .spiral-card__img {
+    transform: scale(1.06);
+  }
+
+  .spiral-card__placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--spiral-card-bg, #EFE8DC);
+  }
+
+  .spiral-card__placeholder svg {
+    width: 60%;
+    height: 60%;
+    opacity: 0.35;
+  }
+
+  .spiral-card__overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0.22) 0%,
+      transparent 35%,
+      rgba(0, 0, 0, 0.25) 60%,
+      rgba(0, 0, 0, 0.78) 100%
+    );
+    pointer-events: none;
+  }
+
+  .spiral-card__header-num {
+    position: absolute;
+    top: 1.6rem;
+    left: 1.8rem;
+    font-family: var(--font-body-family), "Cormorant Garamond", Georgia, serif;
+    font-size: 1.35rem;
+    font-weight: 400;
+    letter-spacing: 0.08em;
+    color: rgba(255, 255, 255, 0.95);
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.45);
+    z-index: 2;
+  }
+
+  .spiral-card__content {
+    position: absolute;
+    bottom: 2rem;
+    left: 2rem;
+    right: 2rem;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+
+  .spiral-card__title {
+    margin: 0;
+    font-family: var(--font-heading-family), "Cormorant Garamond", Georgia, serif;
+    font-size: clamp(2.0rem, 2.4vw, 2.8rem);
+    font-weight: 400;
+    line-height: 1.15;
+    color: #FFFFFF;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+  }
+
+  .spiral-card__price {
+    font-family: var(--font-body-family);
+    font-size: 1.2rem;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    color: rgba(255, 255, 255, 0.92);
+    text-shadow: 0 1px 6px rgba(0, 0, 0, 0.5);
+  }
+
+  /* Fallback: Reduced Motion or Without JS */
+  @media (prefers-reduced-motion: reduce) {
+    .spiral-3d-section {
+      height: auto !important;
+      padding-top: {{ section.settings.padding_top | default: 80 }}px !important;
+      padding-bottom: {{ section.settings.padding_bottom | default: 80 }}px !important;
+    }
+    .spiral-stage {
+      position: static;
+      height: auto;
+      overflow: visible;
+      perspective: none;
+      display: block;
+      padding: 0;
+    }
+    .spiral-header {
+      position: static;
+      transform: none !important;
+      margin: 0 auto 4rem;
+      opacity: 1 !important;
+      visibility: visible !important;
+    }
+    .spiral-viewport {
+      position: static;
+      width: 100%;
+      height: auto;
+      transform: none !important;
+    }
+    .spiral-helix {
+      position: static;
+      width: 100%;
+      height: auto;
+      transform: none !important;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 2.5rem;
+      max-width: 1300px;
+      margin: 0 auto;
+    }
+    .spiral-card {
+      position: relative !important;
+      top: auto !important;
+      left: auto !important;
+      transform: none !important;
+      opacity: 1 !important;
+      visibility: visible !important;
+      pointer-events: auto !important;
+      width: 100% !important;
+    }
+  }
+{%- endstyle -%}
+
+<section
+  id="Spiral3D-{{ section.id }}"
+  class="spiral-3d-section"
+  data-spiral
+  data-scroll-height="{{ section.settings.scroll_height | default: 600 }}"
+  data-radius="{{ section.settings.spiral_radius | default: 550 }}"
+  data-pitch="{{ section.settings.pitch | default: 160 }}"
+  data-step-angle="{{ section.settings.step_angle | default: 50 }}"
+  data-card-width="{{ section.settings.card_width | default: 380 }}"
+  data-tilt="{{ section.settings.camera_tilt | default: -4 }}"
+  aria-label="{{ section.settings.heading | default: '3D Spiral Showcase' | escape }}"
+>
+  <div class="spiral-stage" data-stage>
+    
+    {%- comment -%} Receding 3D Header {%- endcomment -%}
+    <div class="spiral-header" data-header>
+      {%- if section.settings.subheading != blank -%}
+        <span class="spiral-subheading">{{ section.settings.subheading | escape }}</span>
+      {%- endif -%}
+      {%- if section.settings.heading != blank -%}
+        <h2 class="spiral-heading">{{ section.settings.heading | escape }}</h2>
+      {%- endif -%}
+    </div>
+
+    {%- comment -%} 3D Viewport & Helix {%- endcomment -%}
+    <div class="spiral-viewport" aria-hidden="false">
+      <div class="spiral-helix" data-helix>
+        {%- if section.settings.collection != blank and section.settings.collection.products_count > 0 -%}
+          {%- for product in section.settings.collection.products limit: section.settings.max_products -%}
+            {%- assign card_index = forloop.index -%}
+            {%- capture card_num -%}{% if card_index < 10 %}0{% endif %}{{ card_index }}{%- endcapture -%}
+            <a
+              href="{{ product.url }}"
+              class="spiral-card"
+              data-card-index="{{ forloop.index0 }}"
+              aria-label="{{ product.title | escape }}"
+            >
+              <div class="spiral-card__inner">
+                <div class="spiral-card__media">
+                  {%- if product.featured_media != blank -%}
+                    {{
+                      product.featured_media
+                      | image_url: width: 800
+                      | image_tag:
+                        loading: 'lazy',
+                        sizes: '(min-width: 1100px) 320px, 280px',
+                        widths: '300, 400, 600, 800',
+                        class: 'spiral-card__img'
+                    }}
+                  {%- else -%}
+                    {%- assign fallback_img = 'spiral-card-' | append: card_index | append: '.jpg' -%}
+                    <img
+                      src="{{ fallback_img | asset_url }}"
+                      alt="{{ product.title | escape }}"
+                      class="spiral-card__img"
+                      loading="lazy"
+                      width="300"
+                      height="400"
+                    >
+                  {%- endif -%}
+                  <div class="spiral-card__overlay"></div>
+                </div>
+                <div class="spiral-card__header-num">{{ card_num }}</div>
+                <div class="spiral-card__content">
+                  <h3 class="spiral-card__title">{{ product.title | escape }}</h3>
+                  {%- if section.settings.show_price and product.price -%}
+                    <span class="spiral-card__price">{{ product.price | money }}</span>
+                  {%- endif -%}
+                </div>
+              </div>
+            </a>
+          {%- endfor -%}
+        {%- elsif section.blocks.size > 0 -%}
+          {%- for block in section.blocks -%}
+            {%- assign card_index = forloop.index -%}
+            {%- capture default_num -%}{% if card_index < 10 %}0{% endif %}{{ card_index }}{%- endcapture -%}
+            {%- assign card_num = block.settings.number | default: default_num -%}
+            <a
+              href="{{ block.settings.link | default: routes.all_products_collection_url }}"
+              class="spiral-card"
+              data-card-index="{{ forloop.index0 }}"
+              {{ block.shopify_attributes }}
+              aria-label="{{ block.settings.title | default: 'Jewelry Piece' | escape }}"
+            >
+              <div class="spiral-card__inner">
+                <div class="spiral-card__media">
+                  {%- if block.settings.image != blank -%}
+                    {{
+                      block.settings.image
+                      | image_url: width: 800
+                      | image_tag:
+                        loading: 'lazy',
+                        sizes: '(min-width: 1100px) 320px, 280px',
+                        widths: '300, 400, 600, 800',
+                        class: 'spiral-card__img'
+                    }}
+                  {%- else -%}
+                    {%- assign fallback_img = 'spiral-card-' | append: card_index | append: '.jpg' -%}
+                    <img
+                      src="{{ fallback_img | asset_url }}"
+                      alt="{{ block.settings.title | escape }}"
+                      class="spiral-card__img"
+                      loading="lazy"
+                      width="300"
+                      height="400"
+                    >
+                  {%- endif -%}
+                  <div class="spiral-card__overlay"></div>
+                </div>
+                <div class="spiral-card__header-num">{{ card_num }}</div>
+                <div class="spiral-card__content">
+                  <h3 class="spiral-card__title">{{ block.settings.title | escape }}</h3>
+                  {%- if section.settings.show_price and block.settings.price_or_label != blank -%}
+                    <span class="spiral-card__price">{{ block.settings.price_or_label | escape }}</span>
+                  {%- endif -%}
+                </div>
+              </div>
+            </a>
+          {%- endfor -%}
+        {%- else -%}
+          {%- comment -%} 6 Default Cards matching Aurelle Jewelry collection {%- endcomment -%}
+          {%- for i in (1..6) -%}
+            {%- capture card_num -%}0{{ i }}{%- endcapture -%}
+            {%- case i -%}
+              {%- when 1 -%}{%- assign title = "Onyx & Gold" -%}{%- assign price = "$680" -%}
+              {%- when 2 -%}{%- assign title = "Diamond Solitaires" -%}{%- assign price = "$1,250" -%}
+              {%- when 3 -%}{%- assign title = "Sculpted Bangles" -%}{%- assign price = "$540" -%}
+              {%- when 4 -%}{%- assign title = "Hammered Earrings" -%}{%- assign price = "$420" -%}
+              {%- when 5 -%}{%- assign title = "Solar Medallions" -%}{%- assign price = "$590" -%}
+              {%- when 6 -%}{%- assign title = "Azure Florals" -%}{%- assign price = "$740" -%}
+            {%- endcase -%}
+            {%- assign fallback_img = 'spiral-card-' | append: i | append: '.jpg' -%}
+            <a
+              href="{{ routes.all_products_collection_url }}"
+              class="spiral-card"
+              data-card-index="{{ forloop.index0 }}"
+              aria-label="{{ title }}"
+            >
+              <div class="spiral-card__inner">
+                <div class="spiral-card__media">
+                  <img
+                    src="{{ fallback_img | asset_url }}"
+                    alt="{{ title }}"
+                    class="spiral-card__img"
+                    loading="lazy"
+                    width="1000"
+                    height="800"
+                  >
+                  <div class="spiral-card__overlay"></div>
+                </div>
+                <div class="spiral-card__header-num">{{ card_num }}</div>
+                <div class="spiral-card__content">
+                  <h3 class="spiral-card__title">{{ title }}</h3>
+                  {%- if section.settings.show_price -%}
+                    <span class="spiral-card__price">{{ price }}</span>
+                  {%- endif -%}
+                </div>
+              </div>
+            </a>
+          {%- endfor -%}
+        {%- endif -%}
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<script>
+  (function() {
+    class Spiral3D {
+      constructor(section) {
+        this.section = section;
+        this.stage = section.querySelector('[data-stage]');
+        this.header = section.querySelector('[data-header]');
+        this.helix = section.querySelector('[data-helix]');
+        this.cards = Array.from(section.querySelectorAll('.spiral-card'));
+
+        if (!this.stage || !this.helix || this.cards.length === 0) return;
+
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+          return;
+        }
+
+        this.baseRadius = parseFloat(section.dataset.radius) || 550;
+        this.basePitch = parseFloat(section.dataset.pitch) || 160;
+        this.stepAngle = parseFloat(section.dataset.stepAngle) || 50;
+        this.baseCardWidth = parseFloat(section.dataset.cardWidth) || 380;
+        this.cameraTilt = parseFloat(section.dataset.tilt) || -4;
+
+        this.N = this.cards.length;
+        this.mid = (this.N - 1) / 2;
+
+        this.targetProgress = 0;
+        this.currentProgress = 0;
+        this.isTicking = false;
+
+        this.fixStickyAncestors();
+        this.updateDimensions();
+        this.setupCards();
+
+        this.onScroll = this.onScroll.bind(this);
+        this.onResize = this.onResize.bind(this);
+        this.tick = this.tick.bind(this);
+
+        window.addEventListener('scroll', this.onScroll, { passive: true });
+        window.addEventListener('resize', this.onResize, { passive: true });
+
+        this.onScroll();
+        this.update();
+      }
+
+      fixStickyAncestors() {
+        let p = this.section.parentElement;
+        while (p && p !== document.documentElement && p !== document.body) {
+          const style = window.getComputedStyle(p);
+          if (style.overflow === 'hidden' || style.overflowY === 'hidden' || style.overflowX === 'hidden') {
+            p.style.overflow = 'clip';
+          }
+          p = p.parentElement;
+        }
+      }
+
+      updateDimensions() {
+        const w = window.innerWidth;
+        let scale = 1;
+        if (w < 600) {
+          scale = Math.max(0.58, w / 750);
+        } else if (w < 1100) {
+          scale = Math.max(0.75, w / 1100);
+        }
+
+        this.radius = this.baseRadius * scale;
+        this.pitch = this.basePitch * scale;
+        this.cardWidth = this.baseCardWidth * scale;
+
+        this.section.style.setProperty('--card-width', this.cardWidth + 'px');
+      }
+
+      setupCards() {
+        this.cards.forEach((card, i) => {
+          const yOffset = (i - this.mid) * this.pitch;
+          const angle = i * this.stepAngle;
+          card.style.transform = `translate(-50%, -50%) translateY(${yOffset}px) rotateY(${angle}deg) translateZ(${this.radius}px)`;
+        });
+      }
+
+      onResize() {
+        this.updateDimensions();
+        this.setupCards();
+        this.onScroll();
+      }
+
+      onScroll() {
+        const rect = this.section.getBoundingClientRect();
+        const scrollDist = this.section.offsetHeight - window.innerHeight;
+        if (scrollDist <= 0) return;
+
+        const currentScroll = -rect.top;
+        const progress = Math.max(0, Math.min(1, currentScroll / scrollDist));
+        this.targetProgress = progress;
+
+        if (!this.isTicking) {
+          this.isTicking = true;
+          requestAnimationFrame(this.tick);
+        }
+      }
+
+      tick() {
+        const diff = this.targetProgress - this.currentProgress;
+        this.currentProgress += diff * 0.12;
+
+        this.update();
+
+        if (Math.abs(diff) > 0.0003) {
+          requestAnimationFrame(this.tick);
+        } else {
+          this.currentProgress = this.targetProgress;
+          this.update();
+          this.isTicking = false;
+        }
+      }
+
+      update() {
+        const p = this.currentProgress;
+
+        // Smoothstep helper
+        const smoothstep = (min, max, val) => {
+          const x = Math.max(0, Math.min(1, (val - min) / (max - min)));
+          return x * x * (3 - 2 * x);
+        };
+
+        // 1. Heading "Goes Back" 3D Scroll Effect
+        // Gradually recedes into 3D space and slowly fades across card scrolls
+        if (this.header) {
+          // Progress mapped smoothly across the card scroll sequence
+          const hp = Math.min(1, Math.max(0, (p - 0.04) / 0.65));
+          const headerScale = 1 - hp * 0.55; // 1.0 slowly down to 0.45
+          const headerZ = -hp * 360; // moves back into 3D space
+          const headerY = -hp * 40; // subtle upward float
+
+          // Slowly, gradually fades out according to card scrolls:
+          // Fully visible at Card 1, remains softly legible through Cards 2 and 3, fades out by Card 4/5
+          let headerOpacity = 1.0;
+          if (p > 0.08) {
+            const fadeP = Math.min(1, (p - 0.08) / 0.65);
+            headerOpacity = Math.max(0, 1 - Math.pow(fadeP, 1.25));
+          }
+
+          this.header.style.transform = `translateX(-50%) translateY(${headerY}px) translateZ(${headerZ}px) scale(${headerScale})`;
+          this.header.style.opacity = headerOpacity.toFixed(3);
+          this.header.style.visibility = headerOpacity <= 0.01 ? 'hidden' : 'visible';
+        }
+
+        // 2. Card 1 Rises Up, is Kept Up, Then Remaining Process Executes
+        // - Rise phase (p = 0.04 to 0.18): Card 1 rises smoothly from below into front center
+        const riseFactor = 1 - smoothstep(0.04, 0.18, p);
+        const riseOffset = riseFactor * 300;
+
+        // - Fade in cards as Card 1 rises
+        const helixFade = smoothstep(0.02, 0.14, p);
+
+        // - Keep Card 1 up (p = 0.18 to 0.28): Card 1 stays centered and steady ("keep up the first card")
+        // - Remaining process (p = 0.28 to 1.00): remaining cards spiral through smoothly
+        let carouselP = 0;
+        if (p > 0.28) {
+          carouselP = (p - 0.28) / (1.00 - 0.28);
+        }
+
+        const helixAngle = -carouselP * (this.N - 1) * this.stepAngle;
+        const baseY = -(carouselP * (this.N - 1) - this.mid) * this.pitch;
+        const helixY = baseY + riseOffset;
+
+        this.helix.style.transform = `translateZ(${-this.radius}px) rotateX(${this.cameraTilt}deg) rotateY(${helixAngle}deg) translateY(${helixY}px)`;
+
+        // 3. Card Facing Angle, Opacity, and Layering
+        const degToRad = Math.PI / 180;
+        this.cards.forEach((card, i) => {
+          let netAngle = (i * this.stepAngle + helixAngle) % 360;
+          if (netAngle > 180) netAngle -= 360;
+          if (netAngle < -180) netAngle += 360;
+
+          const rad = netAngle * degToRad;
+          const cosVal = Math.cos(rad);
+
+          if (cosVal > 0 && helixFade > 0.01) {
+            // Front hemisphere: facing viewer
+            const baseOpacity = Math.min(1, Math.max(0, Math.pow(cosVal, 1.25)));
+            const opacity = baseOpacity * helixFade;
+            card.style.opacity = opacity.toFixed(3);
+            card.style.visibility = opacity <= 0.02 ? 'hidden' : 'visible';
+            card.style.pointerEvents = opacity > 0.4 ? 'auto' : 'none';
+            card.style.zIndex = Math.round(cosVal * 10);
+          } else {
+            // Back hemisphere or initial entrance: hidden
+            card.style.opacity = '0';
+            card.style.visibility = 'hidden';
+            card.style.pointerEvents = 'none';
+            card.style.zIndex = '0';
+          }
+        });
+      }
+
+      destroy() {
+        window.removeEventListener('scroll', this.onScroll);
+        window.removeEventListener('resize', this.onResize);
+      }
+    }
+
+    function initSpirals() {
+      document.querySelectorAll('[data-spiral]').forEach((el) => {
+        if (!el._spiralInstance) {
+          el._spiralInstance = new Spiral3D(el);
+        }
+      });
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initSpirals);
+    } else {
+      initSpirals();
+    }
+
+    document.addEventListener('shopify:section:load', function(e) {
+      const spiral = e.target.querySelector('[data-spiral]');
+      if (spiral) {
+        spiral._spiralInstance = new Spiral3D(spiral);
+      }
+    });
+
+    document.addEventListener('shopify:section:unload', function(e) {
+      const spiral = e.target.querySelector('[data-spiral]');
+      if (spiral && spiral._spiralInstance) {
+        spiral._spiralInstance.destroy();
+        spiral._spiralInstance = null;
+      }
+    });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "3D Spiral Showcase",
+  "tag": "section",
+  "class": "section",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Discover Our Curated Collection of Timeless Jewelry, Crafted to Make Every Moment Special."
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading (optional)"
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Collection (optional)"
+    },
+    {
+      "type": "range",
+      "id": "max_products",
+      "min": 4,
+      "max": 16,
+      "step": 1,
+      "label": "Max products to show",
+      "default": 8
+    },
+    {
+      "type": "checkbox",
+      "id": "show_price",
+      "label": "Show price",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Spiral 3D Geometry"
+    },
+    {
+      "type": "range",
+      "id": "scroll_height",
+      "min": 300,
+      "max": 900,
+      "step": 50,
+      "unit": "vh",
+      "label": "Scroll length",
+      "default": 600
+    },
+    {
+      "type": "range",
+      "id": "card_width",
+      "min": 200,
+      "max": 560,
+      "step": 10,
+      "unit": "px",
+      "label": "Card width",
+      "default": 380
+    },
+    {
+      "type": "select",
+      "id": "card_ratio",
+      "label": "Card aspect ratio",
+      "options": [
+        {
+          "value": "5/4",
+          "label": "5:4 (Landscape / Cinematic)"
+        },
+        {
+          "value": "4/5",
+          "label": "4:5 (Portrait)"
+        },
+        {
+          "value": "3/4",
+          "label": "3:4 (Classic Portrait)"
+        },
+        {
+          "value": "1/1",
+          "label": "1:1 (Square)"
+        }
+      ],
+      "default": "5/4"
+    },
+    {
+      "type": "range",
+      "id": "spiral_radius",
+      "min": 250,
+      "max": 900,
+      "step": 25,
+      "unit": "px",
+      "label": "Spiral radius",
+      "default": 550
+    },
+    {
+      "type": "range",
+      "id": "step_angle",
+      "min": 30,
+      "max": 90,
+      "step": 5,
+      "unit": "deg",
+      "label": "Angle between cards",
+      "default": 50
+    },
+    {
+      "type": "range",
+      "id": "pitch",
+      "min": 80,
+      "max": 280,
+      "step": 10,
+      "unit": "px",
+      "label": "Height between cards",
+      "default": 160
+    },
+    {
+      "type": "range",
+      "id": "camera_tilt",
+      "min": -20,
+      "max": 20,
+      "step": 2,
+      "unit": "deg",
+      "label": "Camera tilt",
+      "default": -4
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#F7F3EB"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#1C1A16"
+    },
+    {
+      "type": "color",
+      "id": "card_background",
+      "label": "Card background",
+      "default": "#EFE8DC"
+    },
+    {
+      "type": "header",
+      "content": "Section padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "label": "Top spacing",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "label": "Bottom padding",
+      "default": 0
+    }
+  ],
+  "blocks": [
+    {
+      "type": "card",
+      "name": "Card",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Card image"
+        },
+        {
+          "type": "text",
+          "id": "number",
+          "label": "Number index (e.g. 01)",
+          "default": "01"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Fine Chains"
+        },
+        {
+          "type": "text",
+          "id": "price_or_label",
+          "label": "Price or label",
+          "default": "$320"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "3D Spiral Showcase",
+      "blocks": [
+        {
+          "type": "card",
+          "settings": {
+            "number": "01",
+            "title": "Onyx & Gold",
+            "price_or_label": "$680"
+          }
+        },
+        {
+          "type": "card",
+          "settings": {
+            "number": "02",
+            "title": "Diamond Solitaires",
+            "price_or_label": "$1,250"
+          }
+        },
+        {
+          "type": "card",
+          "settings": {
+            "number": "03",
+            "title": "Sculpted Bangles",
+            "price_or_label": "$540"
+          }
+        },
+        {
+          "type": "card",
+          "settings": {
+            "number": "04",
+            "title": "Hammered Earrings",
+            "price_or_label": "$420"
+          }
+        },
+        {
+          "type": "card",
+          "settings": {
+            "number": "05",
+            "title": "Solar Medallions",
+            "price_or_label": "$590"
+          }
+        },
+        {
+          "type": "card",
+          "settings": {
+            "number": "06",
+            "title": "Azure Florals",
+            "price_or_label": "$740"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

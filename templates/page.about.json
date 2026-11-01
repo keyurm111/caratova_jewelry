@@ -1,0 +1,153 @@
+{
+  "sections": {
+    "about_hero": {
+      "type": "about-hero",
+      "settings": {
+        "eyebrow": "ABOUT CARATOVA",
+        "heading": "Crafted In Silence,\nWorn In Splendor",
+        "subtext": "A journey of quiet devotion, noble metals, and gemstones shaped not for noise, but for eternity.",
+        "overlay_opacity": 65,
+        "padding_top": 140,
+        "padding_bottom": 140
+      }
+    },
+    "about_story": {
+      "type": "about-story",
+      "settings": {
+        "background_color": "#F7F3EB",
+        "eyebrow": "OUR ORIGIN",
+        "heading": "Born From a Passion for Enduring Beauty",
+        "text": "<p>Caratova was founded on a singular conviction: that fine jewelry should not be fleeting ornament, but an enduring personal talisman. In an era often dominated by haste and mass repetition, we returned to the sacred, unhurried cadence of the traditional jeweler’s bench.</p><p>Every silhouette is conceived with deliberate stillness. We work exclusively with ethically sourced noble metals and traceable gemstones, allowing each curve, bezel, and prong to be finished by human touch. These are pieces made not merely to be worn, but to be lived in, treasured, and passed down as timeless heirlooms.</p>",
+        "quote_text": "Every detail is considered. Every gemstone holds an unbroken whisper.",
+        "quote_author": "— Founder & Creative Director",
+        "padding_top": 100,
+        "padding_bottom": 100
+      }
+    },
+    "about_pillars": {
+      "type": "about-pillars",
+      "blocks": {
+        "pillar_1": {
+          "type": "pillar",
+          "settings": {
+            "number": "01",
+            "title": "Flawless Provenance",
+            "text": "Every stone is ethically sourced from certified artisanal mines, traced from deep earth to finished piece with uncompromising transparency.",
+            "link_label": "READ OUR SOURCING",
+            "link_url": ""
+          }
+        },
+        "pillar_2": {
+          "type": "pillar",
+          "settings": {
+            "number": "02",
+            "title": "Atelier Artistry",
+            "text": "Master goldsmiths sculpt and set each contour by hand, honoring timeless bench techniques that transcend mechanized shortcuts.",
+            "link_label": "DISCOVER TECHNIQUES",
+            "link_url": ""
+          }
+        },
+        "pillar_3": {
+          "type": "pillar",
+          "settings": {
+            "number": "03",
+            "title": "Singular Vision",
+            "text": "Sculptural forms marrying classical proportions with contemporary organic minimalism, designed to accompany you through every chapter.",
+            "link_label": "EXPLORE DESIGN",
+            "link_url": ""
+          }
+        },
+        "pillar_4": {
+          "type": "pillar",
+          "settings": {
+            "number": "04",
+            "title": "Guaranteed For Life",
+            "text": "Every Caratova creation comes with an eternal commitment to complimentary ultrasonic care, polishing, and bespoke restoration.",
+            "link_label": "LIFETIME PROMISE",
+            "link_url": ""
+          }
+        }
+      },
+      "block_order": [
+        "pillar_1",
+        "pillar_2",
+        "pillar_3",
+        "pillar_4"
+      ],
+      "settings": {
+        "background_color": "#1C1A16",
+        "eyebrow": "THE FOUNDATIONS",
+        "heading": "Our Four Pillars of Quiet Luxury",
+        "subtext": "The enduring principles guiding every creation that leaves our atelier.",
+        "padding_top": 110,
+        "padding_bottom": 110
+      }
+    },
+    "about_craft": {
+      "type": "about-craft",
+      "settings": {
+        "background_color": "#F7F3EB",
+        "eyebrow": "THE PROCESS",
+        "heading": "From Raw Grain to Radiant Form",
+        "text": "<p>The journey begins with grain—solid recycled 18k gold and platinum melted, rolled, and drawn into wire through pure physical devotion. In our quiet atelier, flame and steel give way to deliberate hand manipulation.</p><p>Hours of meticulous filing, microscopic prong setting, and multi-stage mirror buffing follow until the metal achieves a liquid warmth against the skin. No piece leaves the bench until it meets the rigorous gaze of our master jeweler.</p>",
+        "stat_1_val": "100% Recycled Gold",
+        "stat_1_label": "Consciously cast",
+        "stat_2_val": "40+ Hours",
+        "stat_2_label": "Devoted to each piece",
+        "stat_3_val": "Conflict-Free",
+        "stat_3_label": "Certified gemstones",
+        "padding_top": 100,
+        "padding_bottom": 100
+      }
+    },
+    "about_values": {
+      "type": "about-values",
+      "blocks": {
+        "value_1": {
+          "type": "value",
+          "settings": {
+            "eyebrow": "CRAFT",
+            "title": "Exceptional Craftsmanship",
+            "text": "We reject the hurried pace of mass production. Every facet is scrutinized under ten-power magnification to ensure structural harmony, balanced weight, and incandescent brilliance."
+          }
+        },
+        "value_2": {
+          "type": "value",
+          "settings": {
+            "eyebrow": "AESTHETIC",
+            "title": "Timeless Design",
+            "text": "Rooted in classical proportions and modern organic minimalism, our silhouettes are sculpted to transcend fleeting trends and become cherished heirlooms across generations."
+          }
+        },
+        "value_3": {
+          "type": "value",
+          "settings": {
+            "eyebrow": "DEVOTION",
+            "title": "Meaningful Elegance",
+            "text": "Fine jewelry is never mere decoration; it is an intimate talisman of personal triumph, quiet strength, and cherished memories rendered permanent in precious metal."
+          }
+        }
+      },
+      "block_order": [
+        "value_1",
+        "value_2",
+        "value_3"
+      ],
+      "settings": {
+        "background_color": "#F7F3EB",
+        "eyebrow": "OUR CREED",
+        "heading": "Values That Define Caratova",
+        "padding_top": 100,
+        "padding_bottom": 120
+      }
+    }
+  },
+  "order": [
+    "about_hero",
+    "about_story",
+    "about_pillars",
+    "about_craft",
+    "about_values"
+  ]
+}
+

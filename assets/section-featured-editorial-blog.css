@@ -1,0 +1,201 @@
+/* ==========================================================================
+   Featured Editorial Blog Section (Caratova Luxury Atelier)
+   ========================================================================== */
+
+.featured-editorial-blog-section {
+  background-color: rgb(var(--color-background));
+  color: rgb(var(--color-foreground));
+  padding-top: 8rem;
+  padding-bottom: 8rem;
+}
+
+@media screen and (max-width: 749px) {
+  .featured-editorial-blog-section {
+    padding-top: 5rem;
+    padding-bottom: 5rem;
+  }
+}
+
+/* Header - Exact same layout as Trending Articles Section */
+.editorial-blog__header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 4rem;
+  gap: 2rem;
+}
+
+@media screen and (max-width: 749px) {
+  .editorial-blog__header {
+    flex-direction: column;
+    align-items: flex-start;
+    margin-bottom: 2.8rem;
+    gap: 1.6rem;
+  }
+}
+
+.editorial-blog__header-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.editorial-blog__header-actions {
+  display: flex;
+  align-items: center;
+  gap: 2.4rem;
+}
+
+/* View More Button - Exact same styling as Trending Articles Section */
+.editorial-blog__view-all {
+  font-family: var(--font-body-family);
+  font-size: 1.15rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgb(var(--color-foreground));
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  padding-bottom: 0.2rem;
+  transition: all 0.25s ease;
+  white-space: nowrap;
+}
+
+.editorial-blog__view-all:hover {
+  border-bottom-color: rgb(var(--color-foreground));
+  opacity: 0.7;
+}
+
+.editorial-blog__eyebrow {
+  display: block;
+  font-family: var(--font-body-family);
+  font-size: 1.15rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  font-weight: 500;
+  color: rgb(var(--color-foreground));
+  opacity: 0.65;
+  margin-bottom: 1rem;
+}
+
+.editorial-blog__heading {
+  margin: 0;
+  font-family: var(--font-heading-family), "Cormorant Garamond", Georgia, serif;
+  font-size: clamp(2.8rem, 3.8vw, 4.2rem);
+  font-weight: 400;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  color: rgb(var(--color-foreground));
+}
+
+/* 4-Column Grid */
+.editorial-blog__grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: clamp(2rem, 2.5vw, 3.2rem);
+}
+
+@media screen and (max-width: 989px) {
+  .editorial-blog__grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2.5rem;
+  }
+}
+
+@media screen and (max-width: 640px) {
+  .editorial-blog__grid {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+  }
+}
+
+/* Article Card: Strictly Image + Title */
+.editorial-blog__card {
+  display: flex;
+  flex-direction: column;
+}
+
+.editorial-blog__image-link {
+  display: block;
+  width: 100%;
+  text-decoration: none;
+  overflow: hidden;
+}
+
+.editorial-blog__image-wrapper {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background-color: #ede8dd;
+}
+
+.editorial-blog__image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.editorial-blog__image-link:hover .editorial-blog__image {
+  transform: scale(1.05);
+}
+
+.editorial-blog__image-placeholder {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #ede8dd;
+  color: #9c9281;
+}
+
+.editorial-blog__image-placeholder svg {
+  width: 4rem;
+  height: 4rem;
+  opacity: 0.5;
+}
+
+/* Title Only */
+.editorial-blog__content {
+  margin-top: 1.8rem;
+}
+
+.editorial-blog__title {
+  margin: 0;
+  font-family: var(--font-heading-family), "Cormorant Garamond", Georgia, serif;
+  font-size: clamp(1.9rem, 1.8vw, 2.4rem);
+  font-weight: 400;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  color: rgb(var(--color-foreground));
+}
+
+.editorial-blog__title-link {
+  color: inherit;
+  text-decoration: none;
+  transition: opacity 0.25s ease;
+  display: inline-block;
+}
+
+.editorial-blog__title-link:hover {
+  opacity: 0.7;
+}
+
+/* Theme Editor Empty Placeholder Notice */
+.editorial-blog__admin-note {
+  padding: 3rem 2rem;
+  border: 1px dashed rgba(var(--color-foreground), 0.25);
+  text-align: center;
+  color: rgba(var(--color-foreground), 0.75);
+  font-family: var(--font-body-family);
+  font-size: 1.3rem;
+  letter-spacing: 0.04em;
+}

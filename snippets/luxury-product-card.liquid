@@ -1,0 +1,86 @@
+{% doc %}
+  Renders a luxury product card matching Caratova styling.
+  - 1:1 square ratio image
+  - Outlined border & divider line
+  - Only product title & price centered below
+  - Hover actions: ADD TO CART & BUY NOW buttons over the image
+{% enddoc %}
+
+{%- liquid
+  assign card_variant = card_product.selected_or_first_available_variant
+  assign card_variant_id = card_variant.id | default: 0
+  assign primary_image = card_product.featured_image
+  assign hover_image = card_product.images[1]
+
+  assign display_title = card_product.title | default: sample_title | default: 'Fine Jewelry Piece'
+  assign display_price = card_product.price | money | default: sample_price | default: '$680.00'
+  assign display_url = card_product.url | default: routes.all_products_collection_url
+-%}
+
+<div class="luxury-product-card">
+  <div class="luxury-product-card__media-wrap">
+    <a href="{{ display_url }}" class="luxury-product-card__media-link" aria-label="{{ display_title }}">
+      {%- if primary_image != blank -%}
+        {{
+          primary_image
+          | image_url: width: 800
+          | image_tag:
+            loading: 'lazy',
+            sizes: '(min-width: 990px) 25vw, (min-width: 750px) 50vw, 75vw',
+            widths: '300, 500, 700, 800',
+            alt: display_title,
+            class: 'luxury-product-card__img luxury-product-card__img--primary'
+        }}
+        {%- if hover_image != blank -%}
+          {{
+            hover_image
+            | image_url: width: 800
+            | image_tag:
+              loading: 'lazy',
+              sizes: '(min-width: 990px) 25vw, (min-width: 750px) 50vw, 75vw',
+              widths: '300, 500, 700, 800',
+              alt: display_title,
+              class: 'luxury-product-card__img luxury-product-card__img--hover'
+          }}
+        {%- endif -%}
+      {%- else -%}
+        <div class="luxury-product-card__placeholder">
+          {%- assign p_idx = sample_idx | default: 1 | modulo: 6 | plus: 1 -%}
+          {{ 'product-' | append: p_idx | placeholder_svg_tag: 'placeholder-svg' }}
+        </div>
+      {%- endif -%}
+    </a>
+
+    {%- comment -%} Hover Action Buttons: Add to Cart & Buy Now {%- endcomment -%}
+    <div class="luxury-product-card__hover-actions">
+      <button
+        type="button"
+        class="luxury-product-card__btn luxury-product-card__btn--cart"
+        data-variant-id="{{ card_variant_id }}"
+        aria-label="Add to cart"
+      >
+        <svg class="luxury-product-card__cart-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="9" cy="20" r="1.5"></circle>
+          <circle cx="19" cy="20" r="1.5"></circle>
+          <path d="M1 2h3.5l2.4 12.2a1.8 1.8 0 0 0 1.8 1.4h9.8a1.8 1.8 0 0 0 1.8-1.4L22 6.5H5.4"></path>
+        </svg>
+        <span>ADD TO CART</span>
+      </button>
+      <button
+        type="button"
+        class="luxury-product-card__btn luxury-product-card__btn--buynow"
+        data-variant-id="{{ card_variant_id }}"
+        aria-label="Buy now"
+      >
+        <span>BUY NOW</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="luxury-product-card__info">
+    <a href="{{ display_url }}" class="luxury-product-card__title-link">
+      <h3 class="luxury-product-card__title">{{ display_title }}</h3>
+    </a>
+    <div class="luxury-product-card__price">{{ display_price }}</div>
+  </div>
+</div>

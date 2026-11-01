@@ -1,0 +1,521 @@
+{{ 'section-featured-product-highlight.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'section-featured-product-highlight.js' | asset_url }}" defer="defer"></script>
+
+{%- style -%}
+  #shopify-section-{{ section.id }} .product-highlight__content-col,
+  #shopify-section-{{ section.id }} .product-highlight__container,
+  #shopify-section-{{ section.id }} .product-highlight__media-wrap,
+  #shopify-section-{{ section.id }} .product-highlight__placeholder {
+    background-color: {{ section.settings.content_background | default: '#EFE8DC' }} !important;
+  }
+{%- endstyle -%}
+
+{%- liquid
+  assign metaobject_handle = section.settings.metaobject_handle | strip | default: 'product_highlight'
+  assign metaobject_slides = shop.metaobjects[metaobject_handle].values
+
+  assign use_metaobjects = false
+  assign use_product_list = false
+
+  if section.settings.product_list != blank and section.settings.product_list.count > 0
+    assign use_product_list = true
+    assign slides_count = section.settings.product_list.count
+  elsif section.settings.source == 'metaobject' and metaobject_slides != blank and metaobject_slides.size > 0
+    assign use_metaobjects = true
+    assign slides_count = metaobject_slides.size
+  elsif section.blocks.size > 0
+    assign slides_count = section.blocks.size
+  else
+    assign slides_count = 2
+  endif
+
+  assign total_slides_display = slides_count
+  if slides_count < 10
+    assign total_slides_display = '0' | append: slides_count
+  endif
+-%}
+
+<div class="product-highlight-section color-{{ section.settings.color_scheme }} gradient">
+  <div class="page-width">
+    <product-highlight-slider
+      class="product-highlight-slider"
+      data-autoplay="{{ section.settings.auto_rotate }}"
+      data-speed="{{ section.settings.change_slides_speed | default: 2 }}"
+      data-slides-count="{{ slides_count }}"
+      role="region"
+      aria-roledescription="carousel"
+      aria-label="Product Highlight Slider"
+    >
+      <div class="product-highlight__viewport">
+
+        {%- if use_product_list -%}
+          {%- comment -%} Direct Product List from Theme Editor {%- endcomment -%}
+          {%- for prod_ref in section.settings.product_list -%}
+            {%- liquid
+              assign slide_img = prod_ref.featured_image
+              assign slide_tag = prod_ref.selected_or_first_available_variant.sku | default: prod_ref.vendor | default: prod_ref.type | default: 'FINE JEWELRY'
+              assign slide_title = prod_ref.title
+              assign slide_description = prod_ref.description
+              assign slide_price = prod_ref.price | money
+              assign slide_btn_link = prod_ref.url
+              assign slide_btn_label = section.settings.button_label | default: 'DISCOVER THE PIECE'
+            -%}
+            <div
+              class="product-highlight__container product-highlight__slide{% if forloop.first %} is-active{% endif %}{% if section.settings.image_position == 'right' %} product-highlight__container--reverse{% endif %}"
+              data-slide-index="{{ forloop.index0 }}"
+            >
+              {%- if section.settings.image_position != 'right' -%}
+                <div class="product-highlight__media-col">
+                  <div class="product-highlight__media-wrap">
+                    {%- if slide_img != blank -%}
+                      {{
+                        slide_img
+                        | image_url: width: 1200
+                        | image_tag:
+                          loading: 'lazy',
+                          sizes: '(min-width: 990px) 50vw, 100vw',
+                          widths: '400, 600, 800, 1000, 1200',
+                          class: 'product-highlight__img'
+                      }}
+                    {%- else -%}
+                      <div class="product-highlight__placeholder">
+                        {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
+                      </div>
+                    {%- endif -%}
+                  </div>
+                </div>
+              {%- endif -%}
+
+              <div class="product-highlight__content-col">
+                {%- if slide_tag != blank -%}
+                  <span class="product-highlight__tag">{{ slide_tag }}</span>
+                {%- endif -%}
+
+                {%- if slide_title != blank -%}
+                  <h2 class="product-highlight__heading">
+                    {{ slide_title }}
+                  </h2>
+                {%- endif -%}
+
+                {%- if slide_description != blank -%}
+                  <div class="product-highlight__description rte">
+                    {{ slide_description | truncatewords: 35 }}
+                  </div>
+                {%- endif -%}
+
+                {%- if slide_price != blank -%}
+                  <div class="product-highlight__price">
+                    {{ slide_price }}
+                  </div>
+                {%- endif -%}
+
+                <div class="product-highlight__button-wrap">
+                  <a href="{{ slide_btn_link }}" class="product-highlight__btn">
+                    {{ slide_btn_label }}
+                  </a>
+                </div>
+              </div>
+
+              {%- if section.settings.image_position == 'right' -%}
+                <div class="product-highlight__media-col">
+                  <div class="product-highlight__media-wrap">
+                    {%- if slide_img != blank -%}
+                      {{
+                        slide_img
+                        | image_url: width: 1200
+                        | image_tag:
+                          loading: 'lazy',
+                          sizes: '(min-width: 990px) 50vw, 100vw',
+                          widths: '400, 600, 800, 1000, 1200',
+                          class: 'product-highlight__img'
+                      }}
+                    {%- else -%}
+                      <div class="product-highlight__placeholder">
+                        {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
+                      </div>
+                    {%- endif -%}
+                  </div>
+                </div>
+              {%- endif -%}
+            </div>
+          {%- endfor -%}
+
+        {%- elsif use_metaobjects -%}
+          {%- comment -%} Metaobject Entries: Pulls strictly from the 1 single field: 'product' {%- endcomment -%}
+          {%- for item in metaobject_slides -%}
+            {%- liquid
+              # Simply extract the Product reference from the Metaobject
+              assign prod_ref = item.product.value | default: item.product
+
+              if prod_ref != blank
+                assign slide_img = prod_ref.featured_image
+                assign slide_tag = prod_ref.selected_or_first_available_variant.sku | default: prod_ref.vendor | default: prod_ref.type | default: 'FINE JEWELRY'
+                assign slide_title = prod_ref.title
+                assign slide_description = prod_ref.description
+                assign slide_price = prod_ref.price | money
+                assign slide_btn_link = prod_ref.url
+                assign slide_btn_label = section.settings.button_label | default: 'DISCOVER THE PIECE'
+              else
+                # Fallback if manual text was entered into metaobject
+                assign slide_img = item.image.value | default: item.image
+                assign slide_tag = item.tag.value | default: item.tag | default: 'FINE JEWELRY'
+                assign slide_title = item.title.value | default: item.title | default: 'Featured Piece'
+                assign slide_description = item.description.value | default: item.description
+                assign slide_price = item.price.value | default: item.price | default: '$680.00'
+                assign slide_btn_link = item.button_link.value | default: item.button_link | default: '/collections/all'
+                assign slide_btn_label = section.settings.button_label | default: 'DISCOVER THE PIECE'
+              endif
+            -%}
+
+            <div
+              class="product-highlight__container product-highlight__slide{% if forloop.first %} is-active{% endif %}{% if section.settings.image_position == 'right' %} product-highlight__container--reverse{% endif %}"
+              data-slide-index="{{ forloop.index0 }}"
+            >
+              {%- if section.settings.image_position != 'right' -%}
+                <div class="product-highlight__media-col">
+                  <div class="product-highlight__media-wrap">
+                    {%- if slide_img != blank -%}
+                      {{
+                        slide_img
+                        | image_url: width: 1200
+                        | image_tag:
+                          loading: 'lazy',
+                          sizes: '(min-width: 990px) 50vw, 100vw',
+                          widths: '400, 600, 800, 1000, 1200',
+                          class: 'product-highlight__img'
+                      }}
+                    {%- else -%}
+                      <div class="product-highlight__placeholder">
+                        {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
+                      </div>
+                    {%- endif -%}
+                  </div>
+                </div>
+              {%- endif -%}
+
+              <div class="product-highlight__content-col">
+                {%- if slide_tag != blank -%}
+                  <span class="product-highlight__tag">{{ slide_tag }}</span>
+                {%- endif -%}
+
+                {%- if slide_title != blank -%}
+                  <h2 class="product-highlight__heading">
+                    {{ slide_title }}
+                  </h2>
+                {%- endif -%}
+
+                {%- if slide_description != blank -%}
+                  <div class="product-highlight__description rte">
+                    {{ slide_description | truncatewords: 35 }}
+                  </div>
+                {%- endif -%}
+
+                {%- if slide_price != blank -%}
+                  <div class="product-highlight__price">
+                    {{ slide_price }}
+                  </div>
+                {%- endif -%}
+
+                <div class="product-highlight__button-wrap">
+                  <a href="{{ slide_btn_link }}" class="product-highlight__btn">
+                    {{ slide_btn_label }}
+                  </a>
+                </div>
+              </div>
+
+              {%- if section.settings.image_position == 'right' -%}
+                <div class="product-highlight__media-col">
+                  <div class="product-highlight__media-wrap">
+                    {%- if slide_img != blank -%}
+                      {{
+                        slide_img
+                        | image_url: width: 1200
+                        | image_tag:
+                          loading: 'lazy',
+                          sizes: '(min-width: 990px) 50vw, 100vw',
+                          widths: '400, 600, 800, 1000, 1200',
+                          class: 'product-highlight__img'
+                      }}
+                    {%- else -%}
+                      <div class="product-highlight__placeholder">
+                        {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
+                      </div>
+                    {%- endif -%}
+                  </div>
+                </div>
+              {%- endif -%}
+            </div>
+          {%- endfor -%}
+
+        {%- elsif section.blocks.size > 0 -%}
+          {%- comment -%} Manual Blocks (Select Product only) {%- endcomment -%}
+          {%- for block in section.blocks -%}
+            {%- liquid
+              assign prod_ref = block.settings.product
+              if prod_ref != blank
+                assign slide_img = prod_ref.featured_image
+                assign slide_tag = prod_ref.selected_or_first_available_variant.sku | default: prod_ref.vendor | default: prod_ref.type | default: 'FINE JEWELRY'
+                assign slide_title = prod_ref.title
+                assign slide_description = prod_ref.description
+                assign slide_price = prod_ref.price | money
+                assign slide_btn_link = prod_ref.url
+              else
+                assign slide_img = block.settings.custom_image
+                assign slide_tag = block.settings.tag | default: 'FINE JEWELRY'
+                assign slide_title = block.settings.title | default: 'Duet Stacking Ring'
+                assign slide_description = block.settings.description
+                assign slide_price = block.settings.price | default: '$680.00'
+                assign slide_btn_link = block.settings.button_link | default: '#'
+              endif
+              assign slide_btn_label = section.settings.button_label | default: 'DISCOVER THE PIECE'
+            -%}
+
+            <div
+              class="product-highlight__container product-highlight__slide{% if forloop.first %} is-active{% endif %}{% if section.settings.image_position == 'right' %} product-highlight__container--reverse{% endif %}"
+              data-slide-index="{{ forloop.index0 }}"
+              {{ block.shopify_attributes }}
+            >
+              {%- if section.settings.image_position != 'right' -%}
+                <div class="product-highlight__media-col">
+                  <div class="product-highlight__media-wrap">
+                    {%- if slide_img != blank -%}
+                      {{
+                        slide_img
+                        | image_url: width: 1200
+                        | image_tag:
+                          loading: 'lazy',
+                          sizes: '(min-width: 990px) 50vw, 100vw',
+                          widths: '400, 600, 800, 1000, 1200',
+                          class: 'product-highlight__img'
+                      }}
+                    {%- else -%}
+                      <div class="product-highlight__placeholder">
+                        {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
+                      </div>
+                    {%- endif -%}
+                  </div>
+                </div>
+              {%- endif -%}
+
+              <div class="product-highlight__content-col">
+                {%- if slide_tag != blank -%}
+                  <span class="product-highlight__tag">{{ slide_tag }}</span>
+                {%- endif -%}
+
+                {%- if slide_title != blank -%}
+                  <h2 class="product-highlight__heading">
+                    {{ slide_title }}
+                  </h2>
+                {%- endif -%}
+
+                {%- if slide_description != blank -%}
+                  <div class="product-highlight__description rte">
+                    {{ slide_description | truncatewords: 35 }}
+                  </div>
+                {%- endif -%}
+
+                {%- if slide_price != blank -%}
+                  <div class="product-highlight__price">
+                    {{ slide_price }}
+                  </div>
+                {%- endif -%}
+
+                <div class="product-highlight__button-wrap">
+                  <a href="{{ slide_btn_link }}" class="product-highlight__btn">
+                    {{ slide_btn_label }}
+                  </a>
+                </div>
+              </div>
+
+              {%- if section.settings.image_position == 'right' -%}
+                <div class="product-highlight__media-col">
+                  <div class="product-highlight__media-wrap">
+                    {%- if slide_img != blank -%}
+                      {{
+                        slide_img
+                        | image_url: width: 1200
+                        | image_tag:
+                          loading: 'lazy',
+                          sizes: '(min-width: 990px) 50vw, 100vw',
+                          widths: '400, 600, 800, 1000, 1200',
+                          class: 'product-highlight__img'
+                      }}
+                    {%- else -%}
+                      <div class="product-highlight__placeholder">
+                        {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
+                      </div>
+                    {%- endif -%}
+                  </div>
+                </div>
+              {%- endif -%}
+            </div>
+          {%- endfor -%}
+
+        {%- else -%}
+          {%- comment -%} Default placeholder slides {%- endcomment -%}
+          {%- for i in (1..2) -%}
+            <div
+              class="product-highlight__container product-highlight__slide{% if forloop.first %} is-active{% endif %}"
+              data-slide-index="{{ forloop.index0 }}"
+            >
+              <div class="product-highlight__media-col">
+                <div class="product-highlight__media-wrap">
+                  <div class="product-highlight__placeholder">
+                    {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
+                  </div>
+                </div>
+              </div>
+              <div class="product-highlight__content-col">
+                <span class="product-highlight__tag">AUR-RNG-00{{ i }}</span>
+                <h2 class="product-highlight__heading">
+                  {% if i == 1 %}Duet Stacking Ring{% else %}Aura Diamond Solitaire{% endif %}
+                </h2>
+                <div class="product-highlight__description rte">
+                  <p>
+                    {% if i == 1 %}
+                      Twin polished ridges give one ring the look of two. Handcrafted from 18k recycled gold with comfort fit profiling.
+                    {% else %}
+                      A luminous brilliant-cut center stone held in delicate talon prongs, perched above an ultra-slim tapered band.
+                    {% endif %}
+                  </p>
+                </div>
+                <div class="product-highlight__price">
+                  {% if i == 1 %}$680.00{% else %}$1,250.00{% endif %}
+                </div>
+                <div class="product-highlight__button-wrap">
+                  <a href="/collections/all" class="product-highlight__btn">
+                    DISCOVER THE PIECE
+                  </a>
+                </div>
+              </div>
+            </div>
+          {%- endfor -%}
+        {%- endif -%}
+      </div>
+    </product-highlight-slider>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Product Highlight Slider",
+  "tag": "section",
+  "class": "section",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "header",
+      "content": "Super Simple Option 1: Direct Selection"
+    },
+    {
+      "type": "product_list",
+      "id": "product_list",
+      "label": "Select Products Directly",
+      "limit": 10,
+      "info": "Just select products here. Everything (image, title, price, SKU, link) is pulled automatically!"
+    },
+    {
+      "type": "header",
+      "content": "Option 2: Shopify Metaobject"
+    },
+    {
+      "type": "select",
+      "id": "source",
+      "label": "Content Source",
+      "options": [
+        {
+          "value": "metaobject",
+          "label": "Metaobject (Dynamic)"
+        },
+        {
+          "value": "manual",
+          "label": "Manual Blocks"
+        }
+      ],
+      "default": "metaobject",
+      "info": "Used when Direct Product Selection above is empty."
+    },
+    {
+      "type": "text",
+      "id": "metaobject_handle",
+      "label": "Metaobject Handle",
+      "default": "product_highlight",
+      "info": "Definition handle in Shopify Admin (e.g. product_highlight)"
+    },
+    {
+      "type": "header",
+      "content": "Display & Behavior"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button Label",
+      "default": "DISCOVER THE PIECE"
+    },
+    {
+      "type": "select",
+      "id": "image_position",
+      "label": "Desktop Image Position",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "checkbox",
+      "id": "auto_rotate",
+      "label": "Auto-rotate slides",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "change_slides_speed",
+      "min": 1,
+      "max": 10,
+      "step": 1,
+      "unit": "s",
+      "label": "Slide duration",
+      "default": 2
+    },
+    {
+      "type": "color",
+      "id": "content_background",
+      "label": "Content Background Color",
+      "default": "#EFE8DC"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-1"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "product_slide",
+      "name": "Product",
+      "settings": [
+        {
+          "type": "product",
+          "id": "product",
+          "label": "Select Product"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Product Highlight Slider"
+    }
+  ]
+}
+{% endschema %}

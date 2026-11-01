@@ -1,0 +1,660 @@
+/* ==========================================================================
+   Caratova Luxury Atelier - About Us Page Styles
+   Matches the exact structure, typography, colors, and luxury quiet aesthetic
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. About Hero Section (Dark Atmosphere)
+   -------------------------------------------------------------------------- */
+.about-hero-section {
+  position: relative;
+  background-color: #161412;
+  color: #F7F3EB;
+  min-height: 520px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  text-align: center;
+  padding: 13rem 2rem 14rem;
+  box-sizing: border-box;
+}
+
+@media screen and (max-width: 749px) {
+  .about-hero-section {
+    min-height: 420px;
+    padding: 9rem 1.8rem 10rem;
+  }
+}
+
+.about-hero__bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 35%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.about-hero__overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at center, rgba(22, 20, 18, 0.45) 0%, rgba(16, 14, 12, 0.85) 100%);
+  z-index: 1;
+  pointer-events: none;
+}
+
+.about-hero__content {
+  position: relative;
+  z-index: 2;
+  max-width: 820px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.about-hero__eyebrow {
+  display: block;
+  font-family: var(--font-body-family);
+  font-size: 1.15rem;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #EDE8DD;
+  opacity: 0.75;
+  margin-bottom: 2rem;
+}
+
+.about-hero__heading {
+  font-family: var(--font-heading-family), "Cormorant Garamond", Georgia, serif;
+  font-size: clamp(3.4rem, 5.2vw, 5.6rem);
+  font-weight: 400;
+  line-height: 1.14;
+  letter-spacing: -0.01em;
+  color: #F7F3EB;
+  margin: 0 0 2.2rem 0;
+}
+
+.about-hero__subtext {
+  font-family: var(--font-body-family);
+  font-size: clamp(1.45rem, 1.8vw, 1.7rem);
+  line-height: 1.68;
+  color: #EDE8DD;
+  opacity: 0.88;
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+/* --------------------------------------------------------------------------
+   2. About Story & Founder Section (Ivory Light Background)
+   -------------------------------------------------------------------------- */
+.about-story-section {
+  background-color: #F7F3EB;
+  color: #1C1A16;
+  padding-top: 10rem;
+  padding-bottom: 10rem;
+}
+
+@media screen and (max-width: 749px) {
+  .about-story-section {
+    padding-top: 6rem;
+    padding-bottom: 6rem;
+  }
+}
+
+.about-story__grid {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  align-items: center;
+  gap: clamp(4rem, 7vw, 10rem);
+}
+
+@media screen and (max-width: 989px) {
+  .about-story__grid {
+    grid-template-columns: 1fr;
+    gap: 4.5rem;
+  }
+}
+
+.about-story__content {
+  display: flex;
+  flex-direction: column;
+}
+
+.about-story__eyebrow {
+  display: block;
+  font-family: var(--font-body-family);
+  font-size: 1.15rem;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #1C1A16;
+  opacity: 0.6;
+  margin-bottom: 1.8rem;
+}
+
+.about-story__heading {
+  font-family: var(--font-heading-family), "Cormorant Garamond", Georgia, serif;
+  font-size: clamp(3rem, 4.2vw, 4.6rem);
+  font-weight: 400;
+  line-height: 1.18;
+  letter-spacing: -0.01em;
+  color: #1C1A16;
+  margin: 0 0 2.6rem 0;
+}
+
+.about-story__text {
+  margin-bottom: 3.4rem;
+}
+
+.about-story__text p {
+  font-family: var(--font-body-family);
+  font-size: 1.55rem;
+  line-height: 1.72;
+  color: #1C1A16;
+  opacity: 0.85;
+  margin: 0 0 1.8rem 0;
+}
+
+.about-story__text p:last-child {
+  margin-bottom: 0;
+}
+
+/* Quote Box Callout */
+.about-story__quote-card {
+  display: flex;
+  align-items: center;
+  gap: 2.2rem;
+  background-color: #EFE8DC;
+  border: 1px solid rgba(28, 26, 22, 0.08);
+  padding: 2.2rem 2.4rem;
+  margin-top: 1rem;
+}
+
+@media screen and (max-width: 480px) {
+  .about-story__quote-card {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.6rem;
+    padding: 2rem;
+  }
+}
+
+.about-story__quote-thumb-wrap {
+  flex-shrink: 0;
+  width: 82px;
+  height: 82px;
+  overflow: hidden;
+  background-color: #EDE8DD;
+}
+
+.about-story__quote-thumb {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.about-story__quote-body {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.about-story__quote-text {
+  font-family: var(--font-heading-family), "Cormorant Garamond", Georgia, serif;
+  font-size: 1.65rem;
+  font-style: italic;
+  font-weight: 400;
+  line-height: 1.45;
+  color: #1C1A16;
+  margin: 0 0 0.8rem 0;
+}
+
+.about-story__quote-author {
+  font-family: var(--font-body-family);
+  font-size: 1.15rem;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #1C1A16;
+  opacity: 0.65;
+}
+
+/* Portrait Media Column */
+.about-story__media-wrap {
+  position: relative;
+  width: 100%;
+  background-color: #EDE8DD;
+  overflow: hidden;
+  aspect-ratio: 4 / 5;
+}
+
+.about-story__portrait-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.about-story__media-wrap:hover .about-story__portrait-img {
+  transform: scale(1.02);
+}
+
+/* --------------------------------------------------------------------------
+   3. Four Pillars Section (Dark Luxury Noir)
+   -------------------------------------------------------------------------- */
+.about-pillars-section {
+  background-color: #1C1A16;
+  color: #F7F3EB;
+  padding-top: 11rem;
+  padding-bottom: 11rem;
+}
+
+@media screen and (max-width: 749px) {
+  .about-pillars-section {
+    padding-top: 7rem;
+    padding-bottom: 7rem;
+  }
+}
+
+.about-pillars__header {
+  text-align: center;
+  max-width: 720px;
+  margin: 0 auto 6.5rem;
+}
+
+@media screen and (max-width: 749px) {
+  .about-pillars__header {
+    margin-bottom: 4.2rem;
+  }
+}
+
+.about-pillars__eyebrow {
+  display: block;
+  font-family: var(--font-body-family);
+  font-size: 1.15rem;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #EDE8DD;
+  opacity: 0.65;
+  margin-bottom: 1.8rem;
+}
+
+.about-pillars__heading {
+  font-family: var(--font-heading-family), "Cormorant Garamond", Georgia, serif;
+  font-size: clamp(3rem, 4.4vw, 4.6rem);
+  font-weight: 400;
+  line-height: 1.18;
+  letter-spacing: -0.01em;
+  color: #F7F3EB;
+  margin: 0 0 1.8rem 0;
+}
+
+.about-pillars__subtext {
+  font-family: var(--font-body-family);
+  font-size: 1.55rem;
+  line-height: 1.68;
+  color: #EDE8DD;
+  opacity: 0.78;
+  margin: 0;
+}
+
+.about-pillars__grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2.2rem;
+}
+
+@media screen and (max-width: 1024px) {
+  .about-pillars__grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+  }
+}
+
+@media screen and (max-width: 640px) {
+  .about-pillars__grid {
+    grid-template-columns: 1fr;
+    gap: 1.6rem;
+  }
+}
+
+.about-pillars__card {
+  background-color: #24201B;
+  border: 1px solid rgba(247, 243, 235, 0.12);
+  padding: clamp(3rem, 3.5vw, 4rem) clamp(2.4rem, 2.8vw, 3.2rem);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 330px;
+  transition: transform 0.35s ease, border-color 0.35s ease, background-color 0.35s ease;
+}
+
+.about-pillars__card:hover {
+  border-color: rgba(247, 243, 235, 0.32);
+  background-color: #29241E;
+  transform: translateY(-4px);
+}
+
+.about-pillars__card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2.8rem;
+}
+
+.about-pillars__card-num {
+  font-family: var(--font-body-family);
+  font-size: 1.25rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  color: #EDE8DD;
+  opacity: 0.65;
+}
+
+.about-pillars__card-icon {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: #EDE8DD;
+  opacity: 0.45;
+}
+
+.about-pillars__card-body {
+  margin-bottom: 3.2rem;
+}
+
+.about-pillars__card-title {
+  font-family: var(--font-heading-family), "Cormorant Garamond", Georgia, serif;
+  font-size: 2.25rem;
+  font-weight: 400;
+  line-height: 1.28;
+  color: #F7F3EB;
+  margin: 0 0 1.4rem 0;
+}
+
+.about-pillars__card-text {
+  font-family: var(--font-body-family);
+  font-size: 1.45rem;
+  line-height: 1.68;
+  color: #EDE8DD;
+  opacity: 0.78;
+  margin: 0;
+}
+
+.about-pillars__card-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: var(--font-body-family);
+  font-size: 1.15rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #F7F3EB;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(247, 243, 235, 0.3);
+  padding-bottom: 0.3rem;
+  width: fit-content;
+  transition: all 0.25s ease;
+}
+
+.about-pillars__card-link:hover {
+  border-bottom-color: #F7F3EB;
+  gap: 0.9rem;
+}
+
+/* --------------------------------------------------------------------------
+   4. The Atelier & Craftsmanship Section (Ivory Light Background)
+   -------------------------------------------------------------------------- */
+.about-craft-section {
+  background-color: #F7F3EB;
+  color: #1C1A16;
+  padding-top: 10rem;
+  padding-bottom: 10rem;
+}
+
+@media screen and (max-width: 749px) {
+  .about-craft-section {
+    padding-top: 6rem;
+    padding-bottom: 6rem;
+  }
+}
+
+.about-craft__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: clamp(4rem, 7vw, 10rem);
+}
+
+@media screen and (max-width: 989px) {
+  .about-craft__grid {
+    grid-template-columns: 1fr;
+    gap: 4.5rem;
+  }
+}
+
+/* Media on the Left */
+.about-craft__media-wrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background-color: #EDE8DD;
+}
+
+.about-craft__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.about-craft__media-wrap:hover .about-craft__img {
+  transform: scale(1.02);
+}
+
+/* Content on the Right */
+.about-craft__content {
+  display: flex;
+  flex-direction: column;
+}
+
+.about-craft__eyebrow {
+  display: block;
+  font-family: var(--font-body-family);
+  font-size: 1.15rem;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #1C1A16;
+  opacity: 0.6;
+  margin-bottom: 1.8rem;
+}
+
+.about-craft__heading {
+  font-family: var(--font-heading-family), "Cormorant Garamond", Georgia, serif;
+  font-size: clamp(3rem, 4.2vw, 4.6rem);
+  font-weight: 400;
+  line-height: 1.18;
+  letter-spacing: -0.01em;
+  color: #1C1A16;
+  margin: 0 0 2.4rem 0;
+}
+
+.about-craft__text {
+  margin-bottom: 3.6rem;
+}
+
+.about-craft__text p {
+  font-family: var(--font-body-family);
+  font-size: 1.55rem;
+  line-height: 1.72;
+  color: #1C1A16;
+  opacity: 0.85;
+  margin: 0 0 1.8rem 0;
+}
+
+.about-craft__text p:last-child {
+  margin-bottom: 0;
+}
+
+/* Stats / Highlights Row */
+.about-craft__highlights {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  border-top: 1px solid rgba(28, 26, 22, 0.12);
+  padding-top: 2.8rem;
+}
+
+@media screen and (max-width: 560px) {
+  .about-craft__highlights {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+}
+
+.about-craft__highlight-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.about-craft__highlight-icon {
+  width: 28px;
+  height: 28px;
+  margin-bottom: 1.2rem;
+  color: #1C1A16;
+  opacity: 0.85;
+}
+
+.about-craft__highlight-value {
+  font-family: var(--font-heading-family), "Cormorant Garamond", Georgia, serif;
+  font-size: 1.85rem;
+  font-weight: 500;
+  line-height: 1.25;
+  color: #1C1A16;
+  margin-bottom: 0.4rem;
+}
+
+.about-craft__highlight-label {
+  font-family: var(--font-body-family);
+  font-size: 1.25rem;
+  line-height: 1.45;
+  color: #1C1A16;
+  opacity: 0.65;
+}
+
+/* --------------------------------------------------------------------------
+   5. Values That Define Caratova Section
+   -------------------------------------------------------------------------- */
+.about-values-section {
+  background-color: #F7F3EB;
+  color: #1C1A16;
+  padding-top: 10rem;
+  padding-bottom: 12rem;
+}
+
+@media screen and (max-width: 749px) {
+  .about-values-section {
+    padding-top: 6rem;
+    padding-bottom: 7rem;
+  }
+}
+
+.about-values__header {
+  text-align: center;
+  max-width: 760px;
+  margin: 0 auto 6.5rem;
+}
+
+@media screen and (max-width: 749px) {
+  .about-values__header {
+    margin-bottom: 4.2rem;
+  }
+}
+
+.about-values__eyebrow {
+  display: block;
+  font-family: var(--font-body-family);
+  font-size: 1.15rem;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #1C1A16;
+  opacity: 0.6;
+  margin-bottom: 1.8rem;
+}
+
+.about-values__heading {
+  font-family: var(--font-heading-family), "Cormorant Garamond", Georgia, serif;
+  font-size: clamp(3rem, 4.4vw, 4.6rem);
+  font-weight: 400;
+  line-height: 1.18;
+  letter-spacing: -0.01em;
+  color: #1C1A16;
+  margin: 0;
+}
+
+.about-values__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(3rem, 4.5vw, 6.5rem);
+}
+
+@media screen and (max-width: 860px) {
+  .about-values__grid {
+    grid-template-columns: 1fr;
+    gap: 3.5rem;
+  }
+}
+
+.about-values__card {
+  border-top: 1px solid rgba(28, 26, 22, 0.2);
+  padding-top: 2.6rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.about-values__card-eyebrow {
+  display: block;
+  font-family: var(--font-body-family);
+  font-size: 1.15rem;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #1C1A16;
+  opacity: 0.55;
+  margin-bottom: 1.4rem;
+}
+
+.about-values__card-title {
+  font-family: var(--font-heading-family), "Cormorant Garamond", Georgia, serif;
+  font-size: 2.35rem;
+  font-weight: 400;
+  line-height: 1.25;
+  color: #1C1A16;
+  margin: 0 0 1.6rem 0;
+}
+
+.about-values__card-text {
+  font-family: var(--font-body-family);
+  font-size: 1.5rem;
+  line-height: 1.7;
+  color: #1C1A16;
+  opacity: 0.82;
+  margin: 0;
+}
+

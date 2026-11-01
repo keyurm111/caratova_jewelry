@@ -1,0 +1,246 @@
+{{ 'section-trending-articles.css' | asset_url | stylesheet_tag }}
+{{ 'component-luxury-product-card.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'component-luxury-product-card.js' | asset_url }}" defer="defer"></script>
+
+{%- liquid
+  assign limit_count = section.settings.products_to_show | default: 10
+  assign columns_desktop = section.settings.columns_desktop | default: 4
+  assign show_ranking = section.settings.show_ranking
+
+  assign selected_products = section.settings.product_list
+  assign collection = section.settings.collection
+
+  assign has_selected_products = false
+  if selected_products != blank and selected_products.size > 0
+    assign has_selected_products = true
+  endif
+
+  assign has_collection = false
+  if collection != blank and collection.products.size > 0
+    assign has_collection = true
+  endif
+
+  assign has_all_products = false
+  if collections.all.products.size > 0
+    assign has_all_products = true
+  endif
+-%}
+
+<div class="trending-articles-section color-{{ section.settings.color_scheme }} gradient">
+  <div class="page-width">
+    <div class="trending-articles__header">
+      <div class="trending-articles__header-text">
+        {%- if section.settings.eyebrow != blank -%}
+          <span class="trending-articles__eyebrow">{{ section.settings.eyebrow }}</span>
+        {%- endif -%}
+
+        {%- if section.settings.heading != blank -%}
+          <h2 class="trending-articles__heading">
+            {{ section.settings.heading }}
+          </h2>
+        {%- endif -%}
+      </div>
+
+      <div class="trending-articles__header-actions">
+        {%- if section.settings.view_all_label != blank -%}
+          <a
+            href="{{ section.settings.view_all_link | default: collection.url | default: routes.all_products_collection_url }}"
+            class="trending-articles__view-all"
+          >
+            {{ section.settings.view_all_label }}
+          </a>
+        {%- endif -%}
+
+        <div class="trending-articles__nav" aria-label="Slider controls">
+          <button
+            type="button"
+            class="trending-articles__btn trending-articles__btn--prev"
+            data-target="TrendingTrack-{{ section.id }}"
+            aria-label="Previous trending article"
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </button>
+          <button
+            type="button"
+            class="trending-articles__btn trending-articles__btn--next"
+            data-target="TrendingTrack-{{ section.id }}"
+            aria-label="Next trending article"
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="trending-articles__slider">
+      <div
+        class="trending-articles__track"
+        id="TrendingTrack-{{ section.id }}"
+        style="--desktop-cols: {{ columns_desktop }};"
+      >
+        {%- if has_selected_products -%}
+          {%- for product in selected_products limit: limit_count -%}
+            <div class="trending-articles__card-wrap">
+              {%- render 'luxury-product-card', card_product: product -%}
+            </div>
+          {%- endfor -%}
+
+        {%- elsif has_collection -%}
+          {%- for product in collection.products limit: limit_count -%}
+            <div class="trending-articles__card-wrap">
+              {%- render 'luxury-product-card', card_product: product -%}
+            </div>
+          {%- endfor -%}
+
+        {%- elsif has_all_products -%}
+          {%- for product in collections.all.products limit: limit_count -%}
+            <div class="trending-articles__card-wrap">
+              {%- render 'luxury-product-card', card_product: product -%}
+            </div>
+          {%- endfor -%}
+
+        {%- else -%}
+          {%- assign sample_titles = 'Duet Stacking Ring,Aria Solitaire,Hourline Pendant,Thread Necklace,Stillwater Signet,Horizon Pavé Band,Sculpted Hoop Earrings,Linked Cable Bracelet,Petite Diamond Studs,Tapered Baguette Ring' | split: ',' -%}
+          {%- assign sample_prices = '$680.00,$2,380.00,$760.00,$590.00,$660.00,$1,150.00,$420.00,$890.00,$520.00,$1,450.00' | split: ',' -%}
+          {%- for sample in sample_titles limit: limit_count -%}
+            {%- assign sample_idx = forloop.index0 -%}
+            <div class="trending-articles__card-wrap">
+              {%- render 'luxury-product-card',
+                sample_title: sample,
+                sample_price: sample_prices[sample_idx],
+                sample_idx: forloop.index
+              -%}
+            </div>
+          {%- endfor -%}
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function () {
+    function initTrendingSliders() {
+      document.querySelectorAll('.trending-articles-section').forEach(function (section) {
+        var track = section.querySelector('.trending-articles__track');
+        var prevBtn = section.querySelector('.trending-articles__btn--prev');
+        var nextBtn = section.querySelector('.trending-articles__btn--next');
+
+        if (!track || !prevBtn || !nextBtn) return;
+
+        prevBtn.addEventListener('click', function () {
+          var scrollAmount = track.clientWidth * 0.75;
+          track.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+        });
+
+        nextBtn.addEventListener('click', function () {
+          var scrollAmount = track.clientWidth * 0.75;
+          track.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+        });
+      });
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initTrendingSliders);
+    } else {
+      initTrendingSliders();
+    }
+    document.addEventListener('shopify:section:load', initTrendingSliders);
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Trending Articles",
+  "tag": "section",
+  "class": "section",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow Text",
+      "default": "TRENDING ARTICLES"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Most loved pieces"
+    },
+    {
+      "type": "product_list",
+      "id": "product_list",
+      "label": "Select Trending Products",
+      "limit": 10,
+      "info": "Pick the top trending products to show. If left empty, products will be fetched from the selected collection or store."
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Collection",
+      "info": "Optional collection to fetch products from if product list is empty"
+    },
+    {
+      "type": "range",
+      "id": "products_to_show",
+      "min": 4,
+      "max": 12,
+      "step": 1,
+      "default": 10,
+      "label": "Number of products to show"
+    },
+    {
+      "type": "range",
+      "id": "columns_desktop",
+      "min": 3,
+      "max": 5,
+      "step": 1,
+      "default": 4,
+      "label": "Number of columns on desktop"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_ranking",
+      "label": "Show rank badge (NO. 01, NO. 02...)",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "view_all_label",
+      "label": "View All Link Label",
+      "default": "VIEW ALL TRENDING"
+    },
+    {
+      "type": "url",
+      "id": "view_all_link",
+      "label": "View All URL"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-1"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Trending Articles",
+      "settings": {
+        "eyebrow": "TRENDING ARTICLES",
+        "heading": "Most loved pieces",
+        "products_to_show": 10,
+        "columns_desktop": 4,
+        "show_ranking": true,
+        "view_all_label": "VIEW ALL TRENDING"
+      }
+    }
+  ]
+}
+{% endschema %}

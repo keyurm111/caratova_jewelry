@@ -1,0 +1,224 @@
+/* Luxury Product Card Framework */
+.luxury-product-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background-color: #FAF7F2;
+  border: 1px solid #E8E2D5;
+  box-sizing: border-box;
+  overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+  width: 100%;
+  height: 100%;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.luxury-product-card:hover {
+  border-color: #D6CDBF;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+/* 1:1 Image Aspect Ratio */
+.luxury-product-card__media-wrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1 !important;
+  overflow: hidden;
+  background-color: #FAF7F2;
+  border-bottom: 1px solid #E8E2D5;
+}
+
+.luxury-product-card__media-link {
+  display: block;
+  width: 100%;
+  height: 100%;
+  position: relative;
+  text-decoration: none;
+  background-color: #FAF7F2;
+}
+
+.luxury-product-card__img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  box-sizing: border-box;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease;
+}
+
+.luxury-product-card__img--hover {
+  opacity: 0;
+}
+
+.luxury-product-card:hover .luxury-product-card__img--hover {
+  opacity: 1;
+  transform: scale(1.04);
+}
+
+.luxury-product-card:hover .luxury-product-card__img--primary {
+  transform: scale(1.04);
+}
+
+.luxury-product-card__placeholder {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #FAF7F2;
+  padding: 2rem;
+  box-sizing: border-box;
+}
+
+.luxury-product-card__placeholder svg {
+  width: 60%;
+  height: 60%;
+  opacity: 0.35;
+}
+
+
+/* Hover Action Buttons Overlay - Side by Side (Parallel) */
+.luxury-product-card__hover-actions {
+  position: absolute;
+  left: 1rem;
+  right: 1rem;
+  bottom: 1rem;
+  z-index: 5;
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  gap: 0.6rem;
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: none;
+}
+
+.luxury-product-card:hover .luxury-product-card__hover-actions,
+.luxury-product-card__media-wrap:hover .luxury-product-card__hover-actions {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+/* Buttons Styling */
+.luxury-product-card__btn {
+  flex: 1 1 0;
+  min-width: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 1.05rem 0.6rem;
+  font-family: var(--font-body-family);
+  font-size: clamp(0.95rem, 0.85vw, 1.15rem);
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  border: 1px solid #1c1a16;
+  outline: none;
+  line-height: 1;
+  white-space: nowrap;
+  transition: all 0.25s ease;
+  box-sizing: border-box;
+}
+
+.luxury-product-card__btn span {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.luxury-product-card__btn--cart {
+  background-color: #1c1a16;
+  color: #ffffff;
+  border-color: #1c1a16;
+}
+
+.luxury-product-card__btn--cart:hover {
+  background-color: #000000;
+  border-color: #000000;
+  transform: translateY(-1px);
+}
+
+.luxury-product-card__cart-icon {
+  width: 1.4rem;
+  height: 1.4rem;
+  stroke: currentColor;
+  stroke-width: 1.85px;
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  flex-shrink: 0;
+}
+
+.luxury-product-card__btn--buynow {
+  background-color: #ffffff;
+  color: #1c1a16;
+  border: 1px solid #1c1a16;
+}
+
+.luxury-product-card__btn--buynow:hover {
+  background-color: #1c1a16;
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
+/* Product Card Information Box */
+.luxury-product-card__info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 2.2rem 1.6rem 2.4rem;
+  background-color: #FAF7F2;
+  flex-grow: 1;
+}
+
+.luxury-product-card__title-link {
+  text-decoration: none;
+  color: inherit;
+  margin-bottom: 0.6rem;
+  display: inline-block;
+}
+
+.luxury-product-card__title {
+  margin: 0;
+  font-family: var(--font-heading-family), "Cormorant Garamond", "Playfair Display", "Didot", Georgia, serif;
+  font-size: 1.6rem;
+  font-weight: 400;
+  letter-spacing: 0.03em;
+  color: #61564A;
+  line-height: 1.25;
+  transition: opacity 0.2s ease;
+}
+
+.luxury-product-card__title:hover {
+  opacity: 0.75;
+}
+
+.luxury-product-card__price {
+  font-family: var(--font-body-family);
+  font-size: 1.35rem;
+  font-weight: 400;
+  letter-spacing: 0.05em;
+  color: #7D7266;
+}
+
+/* Touch Device Visibility */
+@media (hover: none) {
+  .luxury-product-card__hover-actions {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+}
